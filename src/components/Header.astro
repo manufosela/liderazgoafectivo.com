@@ -1,0 +1,56 @@
+---
+---
+<header class="site-header">
+  <div class="header-content">
+    <div class="logo-container">
+      <img src="/liderazgo_afectivo_logo.svg" alt="Logo Liderazgo Afectivo" class="logo">
+    </div>
+    <h1>Liderazgo Afectivo</h1>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    padding: 1rem;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.5);
+  }
+  
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .logo {
+    height: 40px;
+    width: auto;
+    filter: invert(80%) sepia(32%) saturate(1011%) hue-rotate(359deg) brightness(103%) contrast(94%);
+  }
+  
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: white;
+  }
+
+  @media (max-width: 768px) {
+    .logo {
+      height: 30px;
+    }
+    
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+</style> 

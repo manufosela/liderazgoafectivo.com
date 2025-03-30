@@ -1,0 +1,142 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+---
+
+<Layout title="Liderazgo Afectivo">
+	<Header />
+	
+	<main class="main-content">
+		<div class="video-container">
+			<video autoplay loop muted playsinline class="background-video">
+				<source src="/liderazgoafectivo_videoinicial.mp4" type="video/mp4">
+			</video>
+			<div class="video-overlay"></div>
+		</div>
+		
+		<div class="content-wrapper">
+			<img src="/portada-libro2.jpg" alt="Portada del libro Liderazgo Afectivo" class="book-cover">
+			<div class="announcement">
+				<p class="release-date">A la venta desde el 3 de abril de 2025</p>
+				<p class="publisher">Se puede adquirir en <a href="https://savvily.es/libros/liderazgo-afectivo/" target="_blank">Savvily editorial</a></p>
+			</div>
+		</div>
+	</main>
+
+	<Footer />
+</Layout>
+
+<style>
+	.main-content {
+		position: relative;
+		width: 100%;
+		height: calc(100vh - 60px); /* Restamos el espacio del footer */
+		overflow: hidden;
+		margin-bottom: 60px; /* Espacio para el footer */
+	}
+
+	.video-container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+	}
+
+	.video-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.6); /* Capa semi-transparente sobre el video */
+		z-index: 2;
+	}
+
+	.background-video {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		min-width: 100%;
+		min-height: 100%;
+		width: auto;
+		height: auto;
+		object-fit: cover;
+	}
+
+	.content-wrapper {
+		position: relative;
+		z-index: 3; /* Aseguramos que esté por encima del video y el overlay */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 2rem;
+		height: 100%;
+		padding: 2rem;
+	}
+
+	.book-cover {
+		max-height: 60vh;
+		width: auto;
+		border-radius: 8px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+	}
+
+	.announcement {
+		background: rgba(0, 0, 0, 0.7);
+		padding: 1.5rem;
+		border-radius: 8px;
+	}
+
+	.release-date {
+		font-size: 2rem;
+		color: white;
+		margin: 0 0 1rem 0;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	}
+
+	.publisher {
+		font-size: 1.5rem;
+		color: white;
+		margin: 0;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+		text-align:center;
+	}
+
+	.publisher a {
+		color: #f3d229;
+		text-decoration: none;
+		transition: color 0.3s ease;
+	}
+
+	.publisher a:hover {
+		color: #fff;
+		text-decoration: underline;
+	}
+
+	@media (max-width: 768px) {
+		.book-cover {
+			max-height: 40vh;
+		}
+
+		.release-date {
+			font-size: 1.5rem;
+		}
+
+		.publisher {
+			font-size: 1.2rem;
+		}
+
+		.announcement {
+			padding: 1rem;
+			margin: 0 1rem;
+		}
+	}
+</style>
