@@ -1,9 +1,11 @@
 ---
 interface Props {
 	title: string;
+	description?: string;
+	canonicalUrl?: string;
 }
 
-const { title } = Astro.props;
+const { title, description = "Liderazgo Afectivo - Un libro sobre liderazgo emocional y gestión de equipos", canonicalUrl = "https://liderazgoafectivo.com" } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -11,9 +13,82 @@ const { title } = Astro.props;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/liderazgo_afectivo_logo.svg" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content="https://liderazgoafectivo.com/portada-libro2.jpg" />
+		<meta property="og:site_name" content="Liderazgo Afectivo" />
+		<meta property="og:locale" content="es_ES" />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={canonicalUrl} />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content="https://liderazgoafectivo.com/portada-libro2.jpg" />
+		<meta property="twitter:creator" content="@manufosela" />
+
+		<!-- Schema.org para el libro -->
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "Book",
+				"name": "Liderazgo Afectivo",
+				"author": {
+					"@type": "Person",
+					"name": "Manuel Fosela",
+					"url": "https://manufosela.es",
+					"sameAs": [
+						"https://twitter.com/manufosela",
+						"https://linkedin.com/in/manufosela"
+					]
+				},
+				"publisher": {
+					"@type": "Organization",
+					"name": "Savvily Editorial",
+					"url": "https://savvily.es"
+				},
+				"datePublished": "2025-04-03",
+				"description": "Un libro sobre liderazgo emocional y gestión de equipos",
+				"image": "https://liderazgoafectivo.com/portada-libro2.jpg",
+				"offers": {
+					"@type": "Offer",
+					"url": "https://savvily.es/libros/liderazgo-afectivo/",
+					"priceCurrency": "EUR",
+					"availability": "https://schema.org/PreOrder"
+				},
+				"workExample": {
+					"@type": "Book",
+					"isbn": "978-84-XXXX-XXX-X",
+					"bookEdition": "Primera edición",
+					"bookFormat": "https://schema.org/Paperback",
+					"numberOfPages": "250"
+				}
+			}
+		</script>
+
+		<!-- Schema.org para el sitio web -->
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "WebSite",
+				"name": "Liderazgo Afectivo",
+				"url": "https://liderazgoafectivo.com",
+				"potentialAction": {
+					"@type": "SearchAction",
+					"target": "https://liderazgoafectivo.com/search?q={search_term_string}",
+					"query-input": "required name=search_term_string"
+				}
+			}
+		</script>
 	</head>
 	<body>
 		<slot />

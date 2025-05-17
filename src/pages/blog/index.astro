@@ -1,0 +1,126 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const title = "Blog de Liderazgo Afectivo | Artículos sobre Liderazgo Emocional";
+const description = "Descubre artículos sobre liderazgo emocional, gestión de equipos y desarrollo personal en el blog oficial de Liderazgo Afectivo. Accede a contenido exclusivo en Substack.";
+const canonicalUrl = "https://liderazgoafectivo.com/blog";
+---
+
+<Layout {title} {description} {canonicalUrl}>
+	<Header active="blog" />
+	
+	<main class="blog-content">
+		<h1>Blog de Liderazgo Afectivo</h1>
+		<p class="blog-description">Explora artículos sobre liderazgo emocional, gestión de equipos y desarrollo personal en mi blog de Substack.</p>
+		
+		<div class="blog-redirect">
+			<a href="https://manufosela.substack.com" class="substack-link" target="_blank" rel="noopener noreferrer">
+				Visitar mi blog en Substack
+			</a>
+		</div>
+
+		<section class="blog-info">
+			<h2>¿Por qué Substack?</h2>
+			<p>He elegido Substack como plataforma para mi blog porque me permite:</p>
+			<ul>
+				<li>Mantener un contacto directo con mis lectores</li>
+				<li>Ofrecer contenido exclusivo y de calidad</li>
+				<li>Compartir artículos sobre liderazgo emocional y desarrollo personal</li>
+				<li>Crear una comunidad alrededor del liderazgo afectivo</li>
+			</ul>
+		</section>
+	</main>
+
+	<Footer />
+</Layout>
+
+<style>
+	.blog-content {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 2rem;
+		text-align: center;
+	}
+
+	.blog-description {
+		text-align: center;
+		margin-bottom: 3rem;
+		font-size: 1.2rem;
+		color: #666;
+	}
+
+	.blog-redirect {
+		margin: 4rem 0;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.substack-link {
+		display: inline-block;
+		padding: 1rem 2rem;
+		background-color: #f3d229;
+		color: #000;
+		text-decoration: none;
+		border-radius: 4px;
+		font-weight: bold;
+		font-size: 1.1rem;
+		transition: all 0.3s ease;
+	}
+
+	.substack-link:hover {
+		background-color: #e6c824;
+		transform: translateY(-2px);
+	}
+
+	.blog-info {
+		text-align: left;
+		max-width: 800px;
+		margin: 2rem auto;
+		padding: 2rem;
+		background: rgba(243, 210, 41, 0.1);
+		border-radius: 8px;
+		color: #f3f3f3;
+	}
+
+	.blog-info h2 {
+		color: #f3f3f3;
+		margin-bottom: 1rem;
+	}
+
+	.blog-info p, .blog-info li {
+		color: #f3f3f3;
+	}
+
+	.blog-info ul {
+		list-style-type: none;
+		padding: 0;
+	}
+
+	.blog-info li {
+		margin: 1rem 0;
+		padding-left: 1.5rem;
+		position: relative;
+	}
+
+	.blog-info li:before {
+		content: "•";
+		color: #f3d229;
+		position: absolute;
+		left: 0;
+	}
+
+	@media (max-width: 768px) {
+		.blog-content {
+			padding: 1rem;
+		}
+
+		.blog-info {
+			padding: 1rem;
+		}
+	}
+</style> 
