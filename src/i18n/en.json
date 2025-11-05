@@ -1,0 +1,83 @@
+{
+  "lang": "en",
+  "nav": {
+    "home": "Home",
+    "preview": "Sample pages",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "common": {
+    "siteName": "Affective Leadership",
+    "bookDescription": "A book about emotional leadership and team management",
+    "bookEdition": "First edition",
+    "ogLocale": "en_US",
+    "htmlLang": "en",
+    "footerRights": "All rights reserved",
+    "counterAlt": "Libre Counter",
+    "externalLinkLabel": "Personal website",
+    "languageToggleLabel": "Switch language",
+    "hamburgerLabel": "Open menu",
+    "bookCoverImage": "/portada_LiderazgoAfectivo_EN.png"
+  },
+  "home": {
+    "meta": {
+      "title": "Affective Leadership - Book by Manuel Fosela",
+      "description": "Read the opening chapters of Affective Leadership, including the table of contents, prologue, and preface. A book about emotional leadership and team management.",
+      "canonical": "https://liderazgoafectivo.com/en/"
+    },
+    "publisher": "Now available at",
+    "previewButton": "Read sample pages",
+    "videoAlt": "Cover of the book Affective Leadership",
+    "announcementLinkLabel": "Savvily Publishing"
+  },
+  "preview": {
+    "meta": {
+      "title": "Sample pages - Affective Leadership",
+      "description": "Browse the opening chapters of Affective Leadership, including the table of contents, prologue, and preface. A book about emotional leadership and team management.",
+      "canonical": "https://liderazgoafectivo.com/en/preview"
+    },
+    "heading": "Sample pages from Affective Leadership",
+    "iframeTitle": "Sample pages from Affective Leadership",
+    "ctaLabel": "Buy the book"
+  },
+  "blog": {
+    "meta": {
+      "title": "Affective Leadership Blog | Articles on Emotional Leadership",
+      "description": "Discover articles on emotional leadership, team management, and personal development on the official Affective Leadership blog. Access exclusive content on Substack.",
+      "canonical": "https://liderazgoafectivo.com/en/blog"
+    },
+    "heading": "Affective Leadership Blog",
+    "description": "Explore articles on emotional leadership, team management, and personal development on my Substack blog.",
+    "ctaLabel": "Visit my Substack blog",
+    "sectionHeading": "Why Substack?",
+    "sectionIntro": "I chose Substack as my blog platform because it allows me to:",
+    "bullets": [
+      "Stay in direct contact with readers",
+      "Offer exclusive, high-quality content",
+      "Share insights on emotional leadership and personal development",
+      "Build a community around affective leadership"
+    ]
+  },
+  "contact": {
+    "meta": {
+      "title": "Contact - Affective Leadership",
+      "description": "Reach out to Manuel Fosela, author of Affective Leadership. Enquiries about the book, talks, and collaborations.",
+      "canonical": "https://liderazgoafectivo.com/en/contact"
+    },
+    "heading": "Contact",
+    "description": "Have a question about the book, interested in a talk, or looking to collaborate? Send me a message.",
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message"
+    },
+    "submit": "Send message",
+    "otherHeading": "Other ways to connect",
+    "links": {
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "personal": "Personal website"
+    }
+  }
+}

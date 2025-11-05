@@ -1,10 +1,10 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { getTranslations, getAlternateLang, getLanguagePaths, PATHS } from '../i18n/translations';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getTranslations, getAlternateLang, getLanguagePaths, PATHS } from '../../i18n/translations';
 
-const lang = 'es';
+const lang = 'en';
 const pageKey = 'home';
 const translations = getTranslations(lang);
 const alternateLang = getAlternateLang(lang);
@@ -16,9 +16,9 @@ const description = translations.home.meta.description;
 const canonicalUrl = translations.home.meta.canonical;
 
 const alternateUrls = {
-	es: translations.home.meta.canonical,
-	en: alternateTranslations.home.meta.canonical,
-	'x-default': translations.home.meta.canonical,
+	en: translations.home.meta.canonical,
+	es: alternateTranslations.home.meta.canonical,
+	'x-default': alternateTranslations.home.meta.canonical,
 };
 ---
 
@@ -41,7 +41,7 @@ const alternateUrls = {
 		navigationPaths={PATHS[lang]}
 		languageLinks={languageLinks}
 	/>
-	
+
 	<main class="main-content">
 		<div class="video-container">
 			<video autoplay loop muted playsinline class="background-video">
@@ -49,7 +49,7 @@ const alternateUrls = {
 			</video>
 			<div class="video-overlay"></div>
 		</div>
-		
+
 		<div class="content-wrapper">
 			<img src={translations.common.bookCoverImage} alt={translations.home.videoAlt} class="book-cover">
 			<div class="announcement">
@@ -68,9 +68,9 @@ const alternateUrls = {
 	.main-content {
 		position: relative;
 		width: 100%;
-		height: calc(100vh - 60px); /* Restamos el espacio del footer */
+		height: calc(100vh - 60px);
 		overflow: hidden;
-		margin-bottom: 60px; /* Espacio para el footer */
+		margin-bottom: 60px;
 	}
 
 	.video-container {
@@ -88,7 +88,7 @@ const alternateUrls = {
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background: rgba(0, 0, 0, 0.6); /* Capa semi-transparente sobre el video */
+		background: rgba(0, 0, 0, 0.6);
 		z-index: 2;
 	}
 
@@ -106,7 +106,7 @@ const alternateUrls = {
 
 	.content-wrapper {
 		position: relative;
-		z-index: 3; /* Aseguramos que esté por encima del video y el overlay */
+		z-index: 3;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -129,19 +129,12 @@ const alternateUrls = {
 		border-radius: 8px;
 	}
 
-	.release-date {
-		font-size: 2rem;
-		color: white;
-		margin: 0 0 1rem 0;
-		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-	}
-
 	.publisher {
 		font-size: 1.5rem;
 		color: white;
 		margin: 0;
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-		text-align:center;
+		text-align: center;
 	}
 
 	.publisher a {
@@ -183,10 +176,6 @@ const alternateUrls = {
 	@media (max-width: 768px) {
 		.book-cover {
 			max-height: 40vh;
-		}
-
-		.release-date {
-			font-size: 1.5rem;
 		}
 
 		.publisher {

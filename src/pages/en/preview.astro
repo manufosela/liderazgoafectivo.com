@@ -1,10 +1,10 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { getTranslations, getAlternateLang, getLanguagePaths, PATHS } from '../i18n/translations';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getTranslations, getAlternateLang, getLanguagePaths, PATHS } from '../../i18n/translations';
 
-const lang = 'es';
+const lang = 'en';
 const pageKey = 'preview';
 const translations = getTranslations(lang);
 const alternateLang = getAlternateLang(lang);
@@ -16,9 +16,9 @@ const description = translations.preview.meta.description;
 const canonicalUrl = translations.preview.meta.canonical;
 
 const alternateUrls = {
-	es: translations.preview.meta.canonical,
-	en: alternateTranslations.preview.meta.canonical,
-	'x-default': translations.preview.meta.canonical,
+	en: translations.preview.meta.canonical,
+	es: alternateTranslations.preview.meta.canonical,
+	'x-default': alternateTranslations.preview.meta.canonical,
 };
 ---
 
@@ -41,7 +41,7 @@ const alternateUrls = {
 		navigationPaths={PATHS[lang]}
 		languageLinks={languageLinks}
 	/>
-	
+
 	<main class="preview-content">
 		<article class="book-preview">
 			<h1>{translations.preview.heading}</h1>
@@ -66,7 +66,7 @@ const alternateUrls = {
 
 <style>
 	h1 {
-		margin:0.5rem 0;
+		margin: 0.5rem 0;
 		color: #000;
 	}
 	.preview-content {
@@ -143,7 +143,7 @@ const alternateUrls = {
 
 		h1 {
 			font-size: 1.2rem;
-			margin:0 auto;
+			margin: 0 auto;
 			text-align: center;
 			width: 100%;
 		}
@@ -157,9 +157,9 @@ const alternateUrls = {
 
 		h1 {
 			font-size: 1.2rem;
-			margin:0 auto;
+			margin: 0 auto;
 			text-align: center;
 			width: 100%;
 		}
 	}
-</style> 
+</style>

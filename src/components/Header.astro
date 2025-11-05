@@ -1,30 +1,58 @@
 ---
+import type { Lang, PageKey, Translations } from '../i18n/translations';
+
 interface Props {
-	active?: string;
+	active?: PageKey;
+	lang: Lang;
+	translations: Translations;
+	navigationPaths: Record<PageKey, string>;
+	languageLinks: { es: string; en: string };
 }
 
-const { active = '' } = Astro.props;
+const {
+	active = 'home',
+	lang,
+	translations,
+	navigationPaths,
+	languageLinks,
+} = Astro.props;
+
+const isEnglish = lang === 'en';
 ---
 
 <header class="header">
 	<nav class="nav-container">
 		<div class="logo">
-			<a href="/" class="logo-link">
-				<img src="/liderazgo_afectivo_logo.svg" alt="Liderazgo Afectivo" class="logo-image">
-				<span>Liderazgo Afectivo</span>
+			<a href={navigationPaths.home} class="logo-link">
+				<img src="/liderazgo_afectivo_logo.svg" alt={translations.common.siteName} class="logo-image">
+				<span>{translations.common.siteName}</span>
 			</a>
 		</div>
-		<button class="hamburger" id="menuToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mainNav">
+		<button class="hamburger" id="menuToggle" aria-label={translations.common.hamburgerLabel} aria-expanded="false" aria-controls="mainNav">
 			<span></span>
 			<span></span>
 			<span></span>
 		</button>
 		<div class="nav-links" id="mainNav">
-			<a href="/" class={`nav-link ${active === 'inicio' ? 'active' : ''}`}>Inicio</a>
-			<a href="/primeras-paginas" class={`nav-link ${active === 'primeras-paginas' ? 'active' : ''}`}>Primeras páginas</a>
-			<a href="/blog" class={`nav-link ${active === 'blog' ? 'active' : ''}`}>Blog</a>
-			<a href="/contacto" class={`nav-link ${active === 'contacto' ? 'active' : ''}`}>Contacto</a>
-			<a href="https://manufosela.es" class="nav-link external" target="_blank">Web Personal</a>
+			<a href={navigationPaths.home} class={`nav-link ${active === 'home' ? 'active' : ''}`}>{translations.nav.home}</a>
+			<a href={navigationPaths.preview} class={`nav-link ${active === 'preview' ? 'active' : ''}`}>{translations.nav.preview}</a>
+			<a href={navigationPaths.blog} class={`nav-link ${active === 'blog' ? 'active' : ''}`}>{translations.nav.blog}</a>
+			<a href={navigationPaths.contact} class={`nav-link ${active === 'contact' ? 'active' : ''}`}>{translations.nav.contact}</a>
+			<a href="https://manufosela.es" class="nav-link external" target="_blank">{translations.common.externalLinkLabel}</a>
+			<label class="language-toggle" aria-label={translations.common.languageToggleLabel}>
+				<span class={`toggle-label ${!isEnglish ? 'active' : ''}`}>ES</span>
+				<input
+					type="checkbox"
+					role="switch"
+					aria-checked={isEnglish}
+					data-lang-toggle
+					data-es-href={languageLinks.es}
+					data-en-href={languageLinks.en}
+					checked={isEnglish}
+				/>
+				<span class={`toggle-label ${isEnglish ? 'active' : ''}`}>EN</span>
+				<span class="toggle-slider" aria-hidden="true"></span>
+			</label>
 		</div>
 	</nav>
 </header>
@@ -37,11 +65,85 @@ const { active = '' } = Astro.props;
 document.addEventListener('DOMContentLoaded', function() {
 	const menuToggle = document.getElementById('menuToggle');
 	const mainNav = document.getElementById('mainNav');
+	const langToggle = document.querySelector('[data-lang-toggle]');
+
 	if (menuToggle && mainNav) {
 		menuToggle.addEventListener('click', function() {
 			const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
 			menuToggle.setAttribute('aria-expanded', (!expanded) + "");
 			mainNav.classList.toggle('open');
+		});
+	}
+
+	if (langToggle instanceof HTMLInputElement) {
+		const getStoredPreference = () => {
+			try {
+				return window.localStorage.getItem('preferredLang');
+			} catch {
+				return null;
+			}
+		};
+
+		const updatePreference = (lang) => {
+			try {
+				window.localStorage.setItem('preferredLang', lang);
+			} catch {
+				// Ignore storage errors (private mode, etc.)
+			}
+			langToggle.checked = lang === 'en';
+			langToggle.setAttribute('aria-checked', lang === 'en' ? 'true' : 'false');
+		};
+
+		const redirectTo = (lang) => {
+			const datasetKey = lang === 'en' ? 'enHref' : 'esHref';
+			const href = langToggle.dataset[datasetKey];
+			if (!href) {
+				return;
+			}
+			const currentPath = window.location.pathname;
+			if (!currentPath.startsWith(href)) {
+				window.location.replace(href);
+			}
+		};
+
+		const currentLang = document.documentElement.lang === 'en' ? 'en' : 'es';
+		const storedLang = getStoredPreference();
+
+		if (currentLang === 'es') {
+			if (storedLang === 'en') {
+				redirectTo('en');
+			} else if (!storedLang) {
+				const browserLang =
+					(window.navigator.languages && window.navigator.languages[0]) ||
+					window.navigator.language ||
+					'';
+				const prefersSpanish = browserLang.toLowerCase().startsWith('es');
+				const initialLang = prefersSpanish ? 'es' : 'en';
+				updatePreference(initialLang);
+				if (initialLang !== 'es') {
+					redirectTo(initialLang);
+				}
+			} else {
+				updatePreference(storedLang);
+			}
+		} else {
+			if (!storedLang) {
+				updatePreference('en');
+			} else {
+				updatePreference(storedLang);
+				if (storedLang === 'es') {
+					redirectTo('es');
+				}
+			}
+		}
+
+		langToggle.addEventListener('change', function() {
+			const targetLang = this.checked ? 'en' : 'es';
+			updatePreference(targetLang);
+			const href = this.dataset[targetLang + 'Href'];
+			if (href) {
+				window.location.href = href;
+			}
 		});
 	}
 });
@@ -61,10 +163,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		max-width: 1200px;
 		margin: 0 auto;
 		padding: 0 2rem;
-		display: flex;
-		justify-content: space-between;
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 1.5rem;
 		align-items: center;
 		position: relative;
+	}
+
+	.logo {
+		display: flex;
+		align-items: center;
 	}
 
 	.logo-link {
@@ -159,12 +267,66 @@ document.addEventListener('DOMContentLoaded', function() {
 		transition: all 0.3s;
 	}
 
+	.language-toggle {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.25rem 0.75rem;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.1);
+		cursor: pointer;
+		user-select: none;
+		overflow: hidden;
+	}
+
+	.language-toggle input {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.toggle-label {
+		font-size: 0.85rem;
+		color: rgba(255, 255, 255, 0.7);
+		font-weight: 600;
+		transition: color 0.2s ease;
+		position: relative;
+		z-index: 1;
+	}
+
+	.toggle-label.active {
+		color: #fff;
+	}
+
+	.toggle-slider {
+		position: absolute;
+		top: 0.25rem;
+		bottom: 0.25rem;
+		left: 0.35rem;
+		width: calc(50% - 0.35rem);
+		background: #f3d229;
+		border-radius: 999px;
+		transform: translateX(0);
+		transition: transform 0.25s ease;
+		z-index: 0;
+	}
+
+	.language-toggle input:checked ~ .toggle-slider {
+		transform: translateX(100%);
+	}
+
 	@media (max-width: 900px) {
 		.nav-container {
 			padding: 1rem;
+			grid-template-columns: auto auto;
+			grid-template-rows: auto auto;
 		}
 		.hamburger {
 			display: flex;
+			grid-row: 1;
+			grid-column: 2;
+			justify-self: end;
 		}
 		.nav-links {
 			position: absolute;
@@ -196,6 +358,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		.nav-link.external {
 			margin-top: 0.5rem;
+		}
+		.language-toggle {
+			margin: 0.5rem 1.5rem 0;
+			align-self: center;
 		}
 		.logo-image {
 			height: 30px;

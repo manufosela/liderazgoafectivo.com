@@ -1,11 +1,20 @@
 ---
+import type { Lang, Translations } from '../i18n/translations';
+
+interface Props {
+	lang: Lang;
+	translations: Translations;
+}
+
+const { translations } = Astro.props;
+
 const currentYear = new Date().getFullYear();
 ---
 <footer class="site-footer">
-  <p>© {currentYear} Liderazgo Afectivo® - Todos los derechos reservados</p>
+  <p>© {currentYear} {translations.common.siteName}® - {translations.common.footerRights}</p>
   <div class="librecounterLayer">
     <a class="credit-links" href="https://librecounter.org/referer/show" target="_blank">
-      <img style="padding-left: 1rem;" src="https://librecounter.org/counter.svg" alt="Libre Counter" width="30" height="30">
+      <img style="padding-left: 1rem;" src="https://librecounter.org/counter.svg" alt={translations.common.counterAlt} width="30" height="30">
     </a>
   </div>
 </footer>

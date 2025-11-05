@@ -39,10 +39,11 @@ npm run dev
 
 ## 📦 Estructura del Proyecto
 
-/
+/ 
 ├── public/
 │ ├── liderazgoafectivo_videoinicial.mp4
-│ ├── portada-libro2.jpg
+│ ├── portada_LiderazgoAfectivo_ES.jpg
+│ ├── portada_LiderazgoAfectivo_EN.png
 │ └── liderazgo_afectivo_logo.svg
 ├── src/
 │ ├── components/

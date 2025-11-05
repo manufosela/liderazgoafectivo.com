@@ -1,0 +1,83 @@
+{
+  "lang": "es",
+  "nav": {
+    "home": "Inicio",
+    "preview": "Primeras páginas",
+    "blog": "Blog",
+    "contact": "Contacto"
+  },
+  "common": {
+    "siteName": "Liderazgo Afectivo",
+    "bookDescription": "Un libro sobre liderazgo emocional y gestión de equipos",
+    "bookEdition": "Primera edición",
+    "ogLocale": "es_ES",
+    "htmlLang": "es",
+    "footerRights": "Todos los derechos reservados",
+    "counterAlt": "Libre Counter",
+    "externalLinkLabel": "Web Personal",
+    "languageToggleLabel": "Cambiar idioma",
+    "hamburgerLabel": "Abrir menú",
+    "bookCoverImage": "/portada_LiderazgoAfectivo_ES.jpg"
+  },
+  "home": {
+    "meta": {
+      "title": "Liderazgo Afectivo - Libro de Manuel Fosela",
+      "description": "Descubre las primeras páginas del libro Liderazgo Afectivo, incluyendo el índice, prólogo y prefacio. Un libro sobre liderazgo emocional y gestión de equipos.",
+      "canonical": "https://liderazgoafectivo.com/"
+    },
+    "publisher": "Ya a la venta en",
+    "previewButton": "Leer primeras páginas",
+    "videoAlt": "Portada del libro Liderazgo Afectivo",
+    "announcementLinkLabel": "Savvily editorial"
+  },
+  "preview": {
+    "meta": {
+      "title": "Primeras páginas - Liderazgo Afectivo",
+      "description": "Lee las primeras páginas del libro Liderazgo Afectivo, incluyendo el índice, prólogo y prefacio. Un libro sobre liderazgo emocional y gestión de equipos.",
+      "canonical": "https://liderazgoafectivo.com/primeras-paginas"
+    },
+    "heading": "Primeras páginas de Liderazgo Afectivo",
+    "iframeTitle": "Primeras páginas de Liderazgo Afectivo",
+    "ctaLabel": "Comprar libro"
+  },
+  "blog": {
+    "meta": {
+      "title": "Blog de Liderazgo Afectivo | Artículos sobre Liderazgo Emocional",
+      "description": "Descubre artículos sobre liderazgo emocional, gestión de equipos y desarrollo personal en el blog oficial de Liderazgo Afectivo. Accede a contenido exclusivo en Substack.",
+      "canonical": "https://liderazgoafectivo.com/blog"
+    },
+    "heading": "Blog de Liderazgo Afectivo",
+    "description": "Explora artículos sobre liderazgo emocional, gestión de equipos y desarrollo personal en mi blog de Substack.",
+    "ctaLabel": "Visitar mi blog en Substack",
+    "sectionHeading": "¿Por qué Substack?",
+    "sectionIntro": "He elegido Substack como plataforma para mi blog porque me permite:",
+    "bullets": [
+      "Mantener un contacto directo con mis lectores",
+      "Ofrecer contenido exclusivo y de calidad",
+      "Compartir artículos sobre liderazgo emocional y desarrollo personal",
+      "Crear una comunidad alrededor del liderazgo afectivo"
+    ]
+  },
+  "contact": {
+    "meta": {
+      "title": "Contacto - Liderazgo Afectivo",
+      "description": "Contacta con Manuel Fosela, autor de Liderazgo Afectivo. Consultas sobre el libro, charlas y colaboraciones.",
+      "canonical": "https://liderazgoafectivo.com/contacto"
+    },
+    "heading": "Contacto",
+    "description": "¿Tienes alguna pregunta sobre el libro, estás interesado en una charla o quieres colaborar? Escríbeme.",
+    "fields": {
+      "name": "Nombre",
+      "email": "Email",
+      "subject": "Asunto",
+      "message": "Mensaje"
+    },
+    "submit": "Enviar mensaje",
+    "otherHeading": "Otras formas de contacto",
+    "links": {
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "personal": "Web Personal"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+name: CI Preview
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production bundle
+        run: npm run test
+
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: astro-preview
+          path: dist
+          if-no-files-found: error
