@@ -56,7 +56,8 @@ const alternateUrls = {
 				></iframe>
 			</div>
 			<div class="cta-container">
-				<a href="https://savvily.es/libros/liderazgo-afectivo/" class="buy-button" target="_blank">{translations.preview.ctaLabel}</a>
+				<a href={translations.home.savvilyUrl} class="buy-button savvily" target="_blank" rel="noopener">{translations.home.announcementLinkLabel}</a>
+				<a href={translations.home.amazonPaperUrl} class="buy-button amazon" target="_blank" rel="noopener">{translations.home.amazonPaperLabel}</a>
 			</div>
 		</article>
 	</main>
@@ -114,21 +115,36 @@ const alternateUrls = {
 		max-width: 900px;
 		display: flex;
 		justify-content: center;
+		gap: 1rem;
+		flex-wrap: wrap;
 	}
 
 	.buy-button {
 		display: inline-block;
 		padding: 1rem 2rem;
-		background-color: #f3d229;
-		color: #000;
 		text-decoration: none;
 		border-radius: 4px;
 		font-weight: bold;
 		transition: all 0.3s ease;
 	}
 
-	.buy-button:hover {
-		background-color: #e6c824;
+	.buy-button.savvily {
+		background-color: #f3d229;
+		color: #000;
+	}
+
+	.buy-button.savvily:hover {
+		background-color: #fff;
+		transform: translateY(-2px);
+	}
+
+	.buy-button.amazon {
+		background-color: #ff9900;
+		color: #000;
+	}
+
+	.buy-button.amazon:hover {
+		background-color: #ffad33;
 		transform: translateY(-2px);
 	}
 

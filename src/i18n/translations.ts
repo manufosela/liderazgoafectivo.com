@@ -31,7 +31,12 @@ interface HomeCopy {
   publisher: string;
   previewButton: string;
   videoAlt: string;
-  announcementLinkLabel: string;
+  announcementLinkLabel?: string;
+  savvilyUrl?: string;
+  amazonPaperLabel: string;
+  amazonPaperUrl: string;
+  amazonKindleLabel?: string;
+  amazonKindleUrl?: string;
 }
 
 interface PreviewCopy {
@@ -46,6 +51,7 @@ interface BlogCopy {
   heading: string;
   description: string;
   ctaLabel: string;
+  languageNotice?: string;
   sectionHeading: string;
   sectionIntro: string;
   bullets: string[];
@@ -79,6 +85,7 @@ interface CommonCopy {
   footerRights: string;
   counterAlt: string;
   externalLinkLabel: string;
+  externalLinkUrl: string;
   languageToggleLabel: string;
   hamburgerLabel: string;
   bookCoverImage: string;

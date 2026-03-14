@@ -53,7 +53,11 @@ const alternateUrls = {
 		<div class="content-wrapper">
 			<img src={translations.common.bookCoverImage} alt={translations.home.videoAlt} class="book-cover">
 			<div class="announcement">
-				<p class="publisher">{translations.home.publisher} <a href="https://savvily.es/libros/liderazgo-afectivo/" target="_blank">{translations.home.announcementLinkLabel}</a></p>
+				<p class="publisher">{translations.home.publisher}</p>
+				<div class="buy-links">
+					<a href={translations.home.savvilyUrl} target="_blank" rel="noopener" class="buy-button savvily">{translations.home.announcementLinkLabel}</a>
+					<a href={translations.home.amazonPaperUrl} target="_blank" rel="noopener" class="buy-button amazon">{translations.home.amazonPaperLabel}</a>
+				</div>
 				<div class="book-links">
 					<a href={PATHS[lang].preview} class="preview-button">{translations.home.previewButton}</a>
 				</div>
@@ -169,6 +173,43 @@ const alternateUrls = {
 
 	.preview-button:hover {
 		background-color: #fff;
+		transform: translateY(-2px);
+	}
+
+	.buy-links {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+
+	.buy-button {
+		display: inline-block;
+		padding: 0.6rem 1.2rem;
+		border-radius: 4px;
+		font-weight: bold;
+		text-decoration: none;
+		transition: all 0.3s ease;
+	}
+
+	.buy-button.savvily {
+		background-color: #f3d229;
+		color: #000;
+	}
+
+	.buy-button.savvily:hover {
+		background-color: #fff;
+		transform: translateY(-2px);
+	}
+
+	.buy-button.amazon {
+		background-color: #ff9900;
+		color: #000;
+	}
+
+	.buy-button.amazon:hover {
+		background-color: #ffad33;
 		transform: translateY(-2px);
 	}
 

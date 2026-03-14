@@ -15,6 +15,7 @@
     "footerRights": "All rights reserved",
     "counterAlt": "Libre Counter",
     "externalLinkLabel": "Personal website",
+    "externalLinkUrl": "https://manufosela.es/en/",
     "languageToggleLabel": "Switch language",
     "hamburgerLabel": "Open menu",
     "bookCoverImage": "/portada_LiderazgoAfectivo_EN.png"
@@ -28,7 +29,10 @@
     "publisher": "Now available at",
     "previewButton": "Read sample pages",
     "videoAlt": "Cover of the book Affective Leadership",
-    "announcementLinkLabel": "Savvily Publishing"
+    "amazonPaperLabel": "Amazon paperback",
+    "amazonPaperUrl": "https://www.amazon.es/dp/B0G3R2BW79",
+    "amazonKindleLabel": "Amazon Kindle",
+    "amazonKindleUrl": "https://www.amazon.es/dp/B0G3R5LRHY"
   },
   "preview": {
     "meta": {
@@ -49,6 +53,7 @@
     "heading": "Affective Leadership Blog",
     "description": "Explore articles on emotional leadership, team management, and personal development on my Substack blog.",
     "ctaLabel": "Visit my Substack blog",
+    "languageNotice": "Note: Blog content is written in Spanish",
     "sectionHeading": "Why Substack?",
     "sectionIntro": "I chose Substack as my blog platform because it allows me to:",
     "bullets": [

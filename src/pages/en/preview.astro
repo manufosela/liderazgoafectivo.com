@@ -46,8 +46,8 @@ const alternateUrls = {
 		<article class="book-preview">
 			<h1>{translations.preview.heading}</h1>
 			<div class="pdf-viewer-container">
-				<iframe 
-					src="https://savvily.es/libros/liderazgo-afectivo/muestra-liderazgo-afectivo.pdf"
+				<iframe
+					src="/affective-leadership-sample.pdf"
 					width="100%"
 					height="700"
 					style="border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);"
@@ -56,7 +56,8 @@ const alternateUrls = {
 				></iframe>
 			</div>
 			<div class="cta-container">
-				<a href="https://savvily.es/libros/liderazgo-afectivo/" class="buy-button" target="_blank">{translations.preview.ctaLabel}</a>
+				<a href={translations.home.amazonPaperUrl} class="buy-button amazon" target="_blank" rel="noopener">{translations.home.amazonPaperLabel}</a>
+				<a href={translations.home.amazonKindleUrl} class="buy-button kindle" target="_blank" rel="noopener">{translations.home.amazonKindleLabel}</a>
 			</div>
 		</article>
 	</main>
@@ -114,21 +115,36 @@ const alternateUrls = {
 		max-width: 900px;
 		display: flex;
 		justify-content: center;
+		gap: 1rem;
+		flex-wrap: wrap;
 	}
 
 	.buy-button {
 		display: inline-block;
 		padding: 1rem 2rem;
-		background-color: #f3d229;
-		color: #000;
 		text-decoration: none;
 		border-radius: 4px;
 		font-weight: bold;
 		transition: all 0.3s ease;
 	}
 
-	.buy-button:hover {
-		background-color: #e6c824;
+	.buy-button.amazon {
+		background-color: #ff9900;
+		color: #000;
+	}
+
+	.buy-button.amazon:hover {
+		background-color: #ffad33;
+		transform: translateY(-2px);
+	}
+
+	.buy-button.kindle {
+		background-color: #1a98ff;
+		color: #fff;
+	}
+
+	.buy-button.kindle:hover {
+		background-color: #4db1ff;
 		transform: translateY(-2px);
 	}
 

@@ -15,6 +15,7 @@
     "footerRights": "Todos los derechos reservados",
     "counterAlt": "Libre Counter",
     "externalLinkLabel": "Web Personal",
+    "externalLinkUrl": "https://manufosela.es",
     "languageToggleLabel": "Cambiar idioma",
     "hamburgerLabel": "Abrir menú",
     "bookCoverImage": "/portada_LiderazgoAfectivo_ES.jpg"
@@ -28,7 +29,10 @@
     "publisher": "Ya a la venta en",
     "previewButton": "Leer primeras páginas",
     "videoAlt": "Portada del libro Liderazgo Afectivo",
-    "announcementLinkLabel": "Savvily editorial"
+    "announcementLinkLabel": "Savvily editorial",
+    "amazonPaperLabel": "Amazon papel",
+    "amazonPaperUrl": "https://www.amazon.es/dp/8412719298",
+    "savvilyUrl": "https://savvily.es/libros/liderazgo-afectivo/"
   },
   "preview": {
     "meta": {
