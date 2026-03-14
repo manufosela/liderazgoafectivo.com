@@ -38,7 +38,7 @@ const isEnglish = lang === 'en';
 			<a href={navigationPaths.preview} class={`nav-link ${active === 'preview' ? 'active' : ''}`}>{translations.nav.preview}</a>
 			<a href={navigationPaths.blog} class={`nav-link ${active === 'blog' ? 'active' : ''}`}>{translations.nav.blog}</a>
 			<a href={navigationPaths.contact} class={`nav-link ${active === 'contact' ? 'active' : ''}`}>{translations.nav.contact}</a>
-			<a href="https://manufosela.es" class="nav-link external" target="_blank">{translations.common.externalLinkLabel}</a>
+			<a href={translations.common.externalLinkUrl} class="nav-link external" target="_blank" rel="noopener">{translations.common.externalLinkLabel}</a>
 			<label class="language-toggle" aria-label={translations.common.languageToggleLabel}>
 				<span class={`toggle-label ${!isEnglish ? 'active' : ''}`}>ES</span>
 				<input

@@ -6,12 +6,13 @@ interface Props {
 	translations: Translations;
 }
 
-const { translations } = Astro.props;
+const { lang, translations } = Astro.props;
 
 const currentYear = new Date().getFullYear();
+const trademark = lang === 'es' ? '®' : '';
 ---
 <footer class="site-footer">
-  <p>© {currentYear} {translations.common.siteName}® - {translations.common.footerRights}</p>
+  <p>© {currentYear} {translations.common.siteName}{trademark} - {translations.common.footerRights}</p>
   <div class="librecounterLayer">
     <a class="credit-links" href="https://librecounter.org/referer/show" target="_blank">
       <img style="padding-left: 1rem;" src="https://librecounter.org/counter.svg" alt={translations.common.counterAlt} width="30" height="30">

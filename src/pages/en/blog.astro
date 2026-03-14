@@ -47,6 +47,7 @@ const alternateUrls = {
 		<p class="blog-description">{translations.blog.description}</p>
 
 		<div class="blog-redirect">
+			<p class="language-notice">{translations.blog.languageNotice}</p>
 			<a href="https://manufosela.substack.com" class="substack-link" target="_blank" rel="noopener noreferrer">
 				{translations.blog.ctaLabel}
 			</a>
@@ -88,6 +89,16 @@ const alternateUrls = {
 		flex-direction: column;
 		align-items: center;
 		gap: 1rem;
+	}
+
+	.language-notice {
+		background: rgba(255, 153, 0, 0.15);
+		border: 1px solid #ff9900;
+		color: #ffcc66;
+		padding: 0.75rem 1.5rem;
+		border-radius: 6px;
+		font-size: 0.95rem;
+		margin: 0;
 	}
 
 	.substack-link {
