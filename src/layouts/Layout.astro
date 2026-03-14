@@ -81,6 +81,21 @@ const websiteSchema = {
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
+		{lang === 'es' && alternateUrls.en && (
+			<script is:inline define:vars={{ enUrl: alternateUrls.en }}>
+				(function() {
+					try {
+						var stored = localStorage.getItem('preferredLang');
+						if (stored) return;
+						var browserLang = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+						if (!browserLang.toLowerCase().startsWith('es')) {
+							localStorage.setItem('preferredLang', 'en');
+							location.replace(enUrl);
+						}
+					} catch(e) {}
+				})();
+			</script>
+		)}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
