@@ -88,6 +88,9 @@ const websiteSchema = {
 				})();
 			</script>
 		)}
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
@@ -125,10 +128,18 @@ const websiteSchema = {
 	<body>
 		<slot />
 		<style is:global>
+			:root {
+				--font-heading: 'Playfair Display', Georgia, serif;
+				--font-body: system-ui, -apple-system, sans-serif;
+				--color-bg: #13151A;
+				--color-gold: #f3d229;
+				--color-gold-hover: #e6c824;
+				--header-height: 70px;
+				--footer-height: 60px;
+			}
 			html {
-				font-family: system-ui, sans-serif;
-				background: #13151A;
-				background-size: 224px;
+				font-family: var(--font-body);
+				background: var(--color-bg);
 				color: white;
 			}
 			body {
@@ -139,15 +150,13 @@ const websiteSchema = {
 				line-height: 1.6;
 			}
 			main {
-				padding-bottom: 70px;
+				padding-bottom: var(--footer-height);
+			}
+			h1, h2, h3 {
+				font-family: var(--font-heading);
 			}
 			:focus-visible {
-				outline: 2px solid #f3d229;
-				outline-offset: 2px;
-			}
-			button:focus-visible,
-			a:focus-visible {
-				outline: 2px solid #f3d229;
+				outline: 2px solid var(--color-gold);
 				outline-offset: 2px;
 			}
 		</style>

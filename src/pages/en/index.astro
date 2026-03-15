@@ -25,17 +25,18 @@ const { lang, translations, title, description, canonicalUrl, alternateUrls, lan
 			<div class="video-overlay"></div>
 		</div>
 
-		<div class="content-wrapper">
-			<img src={translations.common.bookCoverImage} alt={translations.home.videoAlt} class="book-cover" width="400" height="600" loading="lazy">
-			<div class="announcement">
-				<p class="publisher">{translations.home.publisher}</p>
-				<div class="buy-links">
-					<a href={translations.home.amazonPaperUrl} target="_blank" rel="noopener" class="buy-button amazon">{translations.home.amazonPaperLabel}</a>
-					<a href={translations.home.amazonKindleUrl} target="_blank" rel="noopener" class="buy-button kindle">{translations.home.amazonKindleLabel}</a>
+		<div class="hero">
+			<div class="hero__cover">
+				<img src={translations.common.bookCoverImage} alt={translations.home.videoAlt} class="hero__cover-img" width="400" height="600">
+			</div>
+			<div class="hero__content">
+				<h1 class="hero__title">{translations.common.siteName}</h1>
+				<p class="hero__publisher">{translations.home.publisher}</p>
+				<div class="hero__buy-links">
+					<a href={translations.home.amazonPaperUrl} target="_blank" rel="noopener" class="hero__btn hero__btn--amazon">{translations.home.amazonPaperLabel}</a>
+					<a href={translations.home.amazonKindleUrl} target="_blank" rel="noopener" class="hero__btn hero__btn--kindle">{translations.home.amazonKindleLabel}</a>
 				</div>
-				<div class="book-links">
-					<a href={PATHS[lang].preview} class="preview-button">{translations.home.previewButton}</a>
-				</div>
+				<a href={PATHS[lang].preview} class="hero__btn hero__btn--preview">{translations.home.previewButton}</a>
 			</div>
 		</div>
 	</main>
