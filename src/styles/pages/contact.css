@@ -2,7 +2,7 @@
 .contact-content {
   max-width: 900px;
   margin: 0 auto;
-  padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem);
+  padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) 2rem;
 }
 
 .contact-content h1 {
@@ -43,7 +43,7 @@
 
 .form-group {
   position: relative;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .form-group label {

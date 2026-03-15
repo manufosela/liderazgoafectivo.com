@@ -32,7 +32,7 @@
 
 .pdf-viewer-container iframe {
   width: 100%;
-  height: clamp(400px, 65vh, 700px);
+  height: clamp(300px, calc(100vh - var(--header-height) - var(--footer-height) - 220px), 600px);
   display: block;
   border: none;
   border-radius: 8px;
@@ -44,7 +44,7 @@
   justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
-  padding: 0.5rem 0 1rem;
+  padding: 1.5rem 0 2rem;
 }
 
 .buy-button {
