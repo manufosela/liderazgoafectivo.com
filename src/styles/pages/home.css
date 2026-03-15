@@ -161,6 +161,10 @@
 }
 
 @media (max-width: 768px) {
+  .background-video {
+    display: none;
+  }
+
   .book-cover {
     max-height: 40vh;
   }

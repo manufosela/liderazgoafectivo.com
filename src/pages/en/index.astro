@@ -19,14 +19,14 @@ const { lang, translations, title, description, canonicalUrl, alternateUrls, lan
 
 	<main class="main-content">
 		<div class="video-container">
-			<video autoplay loop muted playsinline class="background-video">
+			<video autoplay loop muted playsinline class="background-video" poster={translations.common.bookCoverImage} preload="none">
 				<source src="/liderazgoafectivo_videoinicial.mp4" type="video/mp4">
 			</video>
 			<div class="video-overlay"></div>
 		</div>
 
 		<div class="content-wrapper">
-			<img src={translations.common.bookCoverImage} alt={translations.home.videoAlt} class="book-cover">
+			<img src={translations.common.bookCoverImage} alt={translations.home.videoAlt} class="book-cover" width="400" height="600" loading="lazy">
 			<div class="announcement">
 				<p class="publisher">{translations.home.publisher}</p>
 				<div class="buy-links">
