@@ -19,7 +19,7 @@ const { lang, translations, title, description, canonicalUrl, alternateUrls, lan
 
 	<main class="contact-content">
 		<h1>{translations.contact.heading}</h1>
-		<p class="contact-description">{translations.contact.description}</p>
+		<p class="contact-description" set:html={translations.contact.description.replace('{communityLink}', `<a href="${translations.contact.communityLinkUrl}" target="_blank" rel="noopener">${translations.contact.communityLinkText}</a>`)} />
 
 		<div class="contact-grid">
 			<section class="contact-form-section">

@@ -70,7 +70,9 @@
       "canonical": "https://liderazgoafectivo.com/en/contact"
     },
     "heading": "Contact",
-    "description": "Have a question about the book, interested in a talk, or looking to collaborate? Send me a message.",
+    "description": "Have a question about the book, interested in a talk, webinar or workshop, or want to join the {communityLink}?",
+    "communityLinkText": "community",
+    "communityLinkUrl": "https://comunidad.liderazgoafectivo.com",
     "fields": {
       "name": "Name",
       "email": "Email",

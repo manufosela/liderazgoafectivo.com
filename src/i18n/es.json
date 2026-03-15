@@ -69,7 +69,9 @@
       "canonical": "https://liderazgoafectivo.com/contacto"
     },
     "heading": "Contacto",
-    "description": "¿Tienes alguna pregunta sobre el libro, estás interesado en una charla o quieres colaborar? Escríbeme.",
+    "description": "¿Tienes alguna pregunta sobre el libro, estás interesado en que dé una charla, webinar o taller o quieres unirte a la {communityLink}?",
+    "communityLinkText": "comunidad",
+    "communityLinkUrl": "https://comunidad.liderazgoafectivo.com",
     "fields": {
       "name": "Nombre",
       "email": "Email",
