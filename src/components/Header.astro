@@ -76,70 +76,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	if (langToggle instanceof HTMLInputElement) {
-		const getStoredPreference = () => {
-			try {
-				return window.localStorage.getItem('preferredLang');
-			} catch {
-				return null;
-			}
-		};
-
-		const updatePreference = (lang) => {
-			try {
-				window.localStorage.setItem('preferredLang', lang);
-			} catch {
-				// Ignore storage errors (private mode, etc.)
-			}
-			langToggle.checked = lang === 'en';
-			langToggle.setAttribute('aria-checked', lang === 'en' ? 'true' : 'false');
-		};
-
-		const redirectTo = (lang) => {
-			const datasetKey = lang === 'en' ? 'enHref' : 'esHref';
-			const href = langToggle.dataset[datasetKey];
-			if (!href) {
-				return;
-			}
-			const currentPath = window.location.pathname;
-			if (!currentPath.startsWith(href)) {
-				window.location.replace(href);
-			}
-		};
-
 		const currentLang = document.documentElement.lang === 'en' ? 'en' : 'es';
-		const storedLang = getStoredPreference();
-
-		if (currentLang === 'es') {
-			if (storedLang === 'en') {
-				redirectTo('en');
-			} else if (!storedLang) {
-				const browserLang =
-					(window.navigator.languages && window.navigator.languages[0]) ||
-					window.navigator.language ||
-					'';
-				const prefersSpanish = browserLang.toLowerCase().startsWith('es');
-				const initialLang = prefersSpanish ? 'es' : 'en';
-				updatePreference(initialLang);
-				if (initialLang !== 'es') {
-					redirectTo(initialLang);
-				}
-			} else {
-				updatePreference(storedLang);
-			}
-		} else {
-			if (!storedLang) {
-				updatePreference('en');
-			} else {
-				updatePreference(storedLang);
-				if (storedLang === 'es') {
-					redirectTo('es');
-				}
-			}
-		}
+		langToggle.checked = currentLang === 'en';
+		langToggle.setAttribute('aria-checked', currentLang === 'en' ? 'true' : 'false');
 
 		langToggle.addEventListener('change', function() {
 			const targetLang = this.checked ? 'en' : 'es';
-			updatePreference(targetLang);
+			try {
+				window.localStorage.setItem('preferredLang', targetLang);
+			} catch {
+				// Ignore storage errors (private mode, etc.)
+			}
 			const href = this.dataset[targetLang + 'Href'];
 			if (href) {
 				window.location.href = href;

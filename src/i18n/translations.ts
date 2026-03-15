@@ -130,3 +130,26 @@ export const getLanguagePaths = (page: PageKey) => ({
   es: PATHS.es[page],
   en: PATHS.en[page],
 });
+
+export const getPageSetup = (lang: Lang, pageKey: PageKey) => {
+  const translations = getTranslations(lang);
+  const alternateLang = getAlternateLang(lang);
+  const alternateTranslations = getTranslations(alternateLang);
+  const esCanonical = lang === 'es'
+    ? translations[pageKey].meta.canonical
+    : alternateTranslations[pageKey].meta.canonical;
+  return {
+    lang,
+    translations,
+    title: translations[pageKey].meta.title,
+    description: translations[pageKey].meta.description,
+    canonicalUrl: translations[pageKey].meta.canonical,
+    alternateUrls: {
+      es: lang === 'es' ? translations[pageKey].meta.canonical : alternateTranslations[pageKey].meta.canonical,
+      en: lang === 'en' ? translations[pageKey].meta.canonical : alternateTranslations[pageKey].meta.canonical,
+      'x-default': esCanonical,
+    },
+    languageLinks: getLanguagePaths(pageKey),
+    navigationPaths: PATHS[lang],
+  };
+};

@@ -1,16 +1,12 @@
 ---
-import type { Lang } from '../i18n/translations';
+import type { Lang, Translations } from '../i18n/translations';
 
 interface Props {
 	title: string;
 	description?: string;
 	canonicalUrl?: string;
 	lang: Lang;
-	siteName: string;
-	bookDescription: string;
-	bookEdition: string;
-	ogLocale: string;
-	bookCoverImage: string;
+	translations: Translations;
 	alternateUrls?: Partial<Record<Lang | 'x-default', string>>;
 }
 
@@ -19,13 +15,15 @@ const {
 	description = 'Liderazgo Afectivo - Un libro sobre liderazgo emocional y gestión de equipos',
 	canonicalUrl = 'https://liderazgoafectivo.com',
 	lang,
-	siteName,
-	bookDescription,
-	bookEdition,
-	ogLocale,
-	bookCoverImage,
+	translations,
 	alternateUrls = {},
 } = Astro.props;
+
+const siteName = translations.common.siteName;
+const bookDescription = translations.common.bookDescription;
+const bookEdition = translations.common.bookEdition;
+const ogLocale = translations.common.ogLocale;
+const bookCoverImage = translations.common.bookCoverImage;
 
 const siteBaseUrl = 'https://liderazgoafectivo.com';
 const coverImageAbsolute = bookCoverImage.startsWith('http') ? bookCoverImage : `${siteBaseUrl}${bookCoverImage}`;
@@ -56,7 +54,6 @@ const bookSchema = {
 	},
 	workExample: {
 		'@type': 'Book',
-		isbn: '978-84-XXXX-XXX-X',
 		bookEdition,
 		bookFormat: 'https://schema.org/Paperback',
 		numberOfPages: '250',
