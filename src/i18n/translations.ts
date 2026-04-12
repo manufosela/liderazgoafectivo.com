@@ -37,6 +37,8 @@ interface HomeCopy {
   amazonPaperUrl: string;
   amazonKindleLabel?: string;
   amazonKindleUrl?: string;
+  communityLabel: string;
+  communityUrl: string;
 }
 
 interface PreviewCopy {

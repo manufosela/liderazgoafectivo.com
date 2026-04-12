@@ -32,7 +32,9 @@
     "amazonPaperLabel": "Amazon paperback",
     "amazonPaperUrl": "https://www.amazon.es/dp/B0G3R2BW79",
     "amazonKindleLabel": "Amazon Kindle",
-    "amazonKindleUrl": "https://www.amazon.es/dp/B0G3R5LRHY"
+    "amazonKindleUrl": "https://www.amazon.es/dp/B0G3R5LRHY",
+    "communityLabel": "Join the Community",
+    "communityUrl": "https://comunidad.liderazgoafectivo.com"
   },
   "preview": {
     "meta": {
