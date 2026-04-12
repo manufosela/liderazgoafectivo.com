@@ -1,0 +1,227 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getPageSetup } from '../i18n/translations';
+
+const { lang, translations, navigationPaths, languageLinks, alternateUrls } = getPageSetup('es', 'home');
+---
+
+<Layout
+	title="404 — Página no encontrada · Liderazgo Afectivo"
+	description="La página que buscas no existe o ha sido movida. Vuelve al inicio o únete a la Comunidad Liderazgo Afectivo."
+	canonicalUrl="https://liderazgoafectivo.com/404"
+	lang={lang}
+	{translations}
+	{alternateUrls}
+>
+	<Header lang={lang} {translations} {navigationPaths} {languageLinks} />
+
+	<main class="not-found">
+		<div class="not-found__inner">
+			<span class="not-found__eyebrow">Error 404</span>
+			<p class="not-found__code">404</p>
+			<h1 class="not-found__title">Esta página se ha perdido entre las estanterías.</h1>
+			<p class="not-found__subtitle">
+				La URL que buscas no existe o ha sido movida.<br>
+				<span class="not-found__en">The page you're looking for doesn't exist or has been moved.</span>
+			</p>
+			<div class="not-found__actions">
+				<a href="/" class="not-found__btn not-found__btn--primary">Volver al inicio</a>
+				<a href="https://comunidad.liderazgoafectivo.com" target="_blank" rel="noopener" class="not-found__btn not-found__btn--ghost">Únete a la Comunidad →</a>
+			</div>
+		</div>
+	</main>
+
+	<Footer lang={lang} {translations} />
+</Layout>
+
+<style>
+	.not-found {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: calc(100dvh - var(--header-height) - var(--footer-height));
+		padding: clamp(2rem, 6vh, 4rem) clamp(1.5rem, 4vw, 3rem);
+		overflow: hidden;
+	}
+
+	.not-found::before {
+		content: '';
+		position: absolute;
+		top: 10%;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 80vw;
+		max-width: 900px;
+		height: 80vw;
+		max-height: 900px;
+		background: radial-gradient(
+			circle at 50% 40%,
+			rgba(0, 224, 179, 0.08) 0%,
+			rgba(0, 224, 179, 0.02) 40%,
+			transparent 70%
+		);
+		border-radius: 50%;
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	.not-found__inner {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		gap: 1.25rem;
+		max-width: 640px;
+		animation: fadeIn 0.9s ease both;
+	}
+
+	.not-found__eyebrow {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		font-family: var(--font-body);
+		font-size: 0.72rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.14em;
+		color: var(--on-surface-variant);
+	}
+
+	.not-found__eyebrow::before,
+	.not-found__eyebrow::after {
+		content: '';
+		width: 1.75rem;
+		height: 1px;
+		background: var(--primary);
+	}
+
+	.not-found__code {
+		font-family: var(--font-display);
+		font-size: clamp(6rem, 18vw, 11rem);
+		font-weight: 800;
+		line-height: 0.9;
+		letter-spacing: -0.04em;
+		margin: 0;
+		background: linear-gradient(135deg, var(--on-surface-strong) 0%, var(--primary) 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	.not-found__title {
+		font-family: var(--font-display);
+		font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+		font-weight: 700;
+		line-height: 1.1;
+		letter-spacing: -0.025em;
+		color: var(--on-surface-strong);
+		margin: 0;
+		max-width: 22ch;
+	}
+
+	.not-found__subtitle {
+		font-family: var(--font-body);
+		font-size: 1rem;
+		line-height: 1.65;
+		color: var(--on-surface-variant);
+		margin: 0 0 0.75rem;
+		max-width: 52ch;
+	}
+
+	.not-found__en {
+		display: block;
+		margin-top: 0.35rem;
+		font-style: italic;
+		color: var(--on-surface-muted);
+		font-size: 0.92rem;
+	}
+
+	.not-found__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.85rem;
+		justify-content: center;
+		margin-top: 0.5rem;
+	}
+
+	.not-found__btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.95rem 1.85rem;
+		border-radius: var(--radius-md);
+		font-family: var(--font-body);
+		font-weight: 600;
+		font-size: 0.95rem;
+		letter-spacing: -0.005em;
+		text-decoration: none;
+		border: none;
+		cursor: pointer;
+		transition: transform 0.2s ease-out, box-shadow 0.2s ease-out,
+			background 0.2s ease-out, color 0.2s ease-out;
+		white-space: nowrap;
+	}
+
+	.not-found__btn:hover {
+		transform: translateY(-1px);
+		text-decoration: none;
+	}
+
+	.not-found__btn:active {
+		transform: translateY(0);
+	}
+
+	.not-found__btn--primary {
+		background: var(--primary-gradient);
+		color: var(--on-primary);
+		box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset,
+			0 14px 32px -14px rgba(0, 224, 179, 0.55);
+	}
+
+	.not-found__btn--primary:hover {
+		color: var(--on-primary);
+		box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset,
+			0 20px 40px -16px rgba(0, 224, 179, 0.7);
+	}
+
+	.not-found__btn--ghost {
+		background: transparent;
+		color: var(--on-surface);
+		box-shadow: inset 0 0 0 1px var(--outline-strong);
+	}
+
+	.not-found__btn--ghost:hover {
+		background: rgba(255, 255, 255, 0.05);
+		color: var(--on-surface-strong);
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@media (max-width: 640px) {
+		.not-found__actions {
+			flex-direction: column;
+			width: 100%;
+		}
+
+		.not-found__btn {
+			width: 100%;
+			max-width: 320px;
+		}
+	}
+</style>
