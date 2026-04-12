@@ -32,7 +32,9 @@
     "announcementLinkLabel": "Savvily editorial",
     "amazonPaperLabel": "Amazon papel",
     "amazonPaperUrl": "https://www.amazon.es/dp/8412719298",
-    "savvilyUrl": "https://savvily.es/libros/liderazgo-afectivo/"
+    "savvilyUrl": "https://savvily.es/libros/liderazgo-afectivo/",
+    "communityLabel": "Únete a la Comunidad",
+    "communityUrl": "https://comunidad.liderazgoafectivo.com"
   },
   "preview": {
     "meta": {

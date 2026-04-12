@@ -36,7 +36,10 @@ const { lang, translations, title, description, canonicalUrl, alternateUrls, lan
 					<a href={translations.home.amazonPaperUrl} target="_blank" rel="noopener" class="hero__btn hero__btn--amazon">{translations.home.amazonPaperLabel}</a>
 					<a href={translations.home.amazonKindleUrl} target="_blank" rel="noopener" class="hero__btn hero__btn--kindle">{translations.home.amazonKindleLabel}</a>
 				</div>
-				<a href={PATHS[lang].preview} class="hero__btn hero__btn--preview">{translations.home.previewButton}</a>
+				<div class="hero__tertiary-links">
+					<a href={PATHS[lang].preview} class="hero__btn hero__btn--preview">{translations.home.previewButton}</a>
+					<a href={translations.home.communityUrl} target="_blank" rel="noopener" class="hero__btn hero__btn--preview">{translations.home.communityLabel}</a>
+				</div>
 			</div>
 		</div>
 	</main>
