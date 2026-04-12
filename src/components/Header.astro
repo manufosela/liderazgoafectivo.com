@@ -97,17 +97,20 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
+	/* ===== Glass navigation — Technical Quiet Luxury ===== */
 	.header {
-		background: rgba(0, 0, 0, 0.8);
-		padding: 1rem 0;
+		background: rgba(19, 19, 19, 0.6);
+		backdrop-filter: blur(20px) saturate(140%);
+		-webkit-backdrop-filter: blur(20px) saturate(140%);
+		padding: 1.1rem 0;
 		position: sticky;
 		top: 0;
 		z-index: 100;
-		backdrop-filter: blur(10px);
+		border-bottom: 1px solid var(--outline-soft);
 	}
 
 	.nav-container {
-		max-width: 1200px;
+		max-width: var(--max-width);
 		margin: 0 auto;
 		padding: 0 2rem;
 		display: grid;
@@ -125,70 +128,91 @@ document.addEventListener('DOMContentLoaded', function() {
 	.logo-link {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
+		gap: 0.85rem;
 		text-decoration: none;
 	}
 
 	.logo-image {
-		height: 40px;
+		height: 38px;
 		width: auto;
-		filter: invert(80%) sepia(32%) saturate(1011%) hue-rotate(359deg) brightness(103%) contrast(94%);
+		/* Tint logo SVG to primary mint — matches the single-accent rule */
+		filter: brightness(0) saturate(100%) invert(72%) sepia(67%) saturate(2478%)
+			hue-rotate(118deg) brightness(98%) contrast(101%);
+		transition: filter 0.25s ease-out;
 	}
 
 	.logo-link span {
-		color: white;
-		font-size: 1.5rem;
-		font-weight: bold;
-		transition: color 0.3s ease;
+		font-family: var(--font-display);
+		color: var(--on-surface-strong);
+		font-size: 1.25rem;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		transition: color 0.25s ease-out;
 	}
 
 	.logo-link:hover span {
-		color: #f3d229;
+		color: var(--primary);
 	}
 
 	.nav-links {
 		display: flex;
 		gap: 2rem;
 		align-items: center;
+		justify-content: flex-end;
 		transition: max-height 0.3s ease, opacity 0.3s ease;
 	}
 
 	.nav-link {
-		color: white;
+		font-family: var(--font-body);
+		font-size: 0.92rem;
+		font-weight: 500;
+		color: var(--on-surface-variant);
 		text-decoration: none;
-		transition: color 0.3s ease;
+		transition: color 0.25s ease-out;
 		position: relative;
+		padding: 0.4rem 0;
 	}
 
 	.nav-link:hover {
-		color: #f3d229;
+		color: var(--on-surface-strong);
 	}
 
 	.nav-link.active {
-		color: #f3d229;
+		color: var(--on-surface-strong);
 	}
 
 	.nav-link.active::after {
 		content: '';
 		position: absolute;
-		bottom: -5px;
+		bottom: -6px;
 		left: 0;
-		width: 100%;
+		right: 0;
 		height: 2px;
-		background-color: #f3d229;
+		background: var(--primary-gradient);
+		border-radius: 999px;
 	}
 
 	.nav-link.external {
-		background: #f3d229;
-		color: #000;
-		padding: 0.5rem 1rem;
-		border-radius: 4px;
-		font-weight: bold;
+		background: var(--primary-gradient);
+		color: var(--on-primary);
+		padding: 0.55rem 1.15rem;
+		border-radius: var(--radius-md);
+		font-weight: 600;
+		letter-spacing: -0.005em;
+		box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset,
+			0 12px 28px -12px rgba(0, 224, 179, 0.55);
+		transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
 	}
 
 	.nav-link.external:hover {
-		background: #e6c824;
-		color: #000;
+		color: var(--on-primary);
+		transform: translateY(-1px);
+		box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset,
+			0 18px 36px -14px rgba(0, 224, 179, 0.65);
+	}
+
+	.nav-link.external::after {
+		display: none;
 	}
 
 	.hamburger {
@@ -207,24 +231,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	.hamburger span {
 		display: block;
-		width: 28px;
-		height: 3px;
-		background: #fff;
+		width: 26px;
+		height: 2px;
+		background: var(--on-surface);
 		border-radius: 2px;
 		transition: all 0.3s;
 	}
 
+	/* ===== Language toggle — mint accent ===== */
 	.language-toggle {
 		position: relative;
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
-		padding: 0.25rem 0.75rem;
+		padding: 0.3rem 0.85rem;
 		border-radius: 999px;
-		background: rgba(255, 255, 255, 0.1);
+		background: var(--surface-container);
 		cursor: pointer;
 		user-select: none;
 		overflow: hidden;
+		box-shadow: inset 0 0 0 1px var(--outline-soft);
 	}
 
 	.language-toggle input {
@@ -236,29 +262,32 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	.toggle-label {
-		font-size: 0.85rem;
-		color: rgba(255, 255, 255, 0.7);
+		font-family: var(--font-body);
+		font-size: 0.78rem;
+		letter-spacing: 0.04em;
+		color: var(--on-surface-muted);
 		font-weight: 600;
-		transition: color 0.2s ease;
+		transition: color 0.25s ease-out;
 		position: relative;
 		z-index: 1;
 	}
 
 	.toggle-label.active {
-		color: #fff;
+		color: var(--on-primary);
 	}
 
 	.toggle-slider {
 		position: absolute;
 		top: 0.25rem;
 		bottom: 0.25rem;
-		left: 0.35rem;
-		width: calc(50% - 0.35rem);
-		background: #f3d229;
+		left: 0.3rem;
+		width: calc(50% - 0.3rem);
+		background: var(--primary-gradient);
 		border-radius: 999px;
 		transform: translateX(0);
-		transition: transform 0.25s ease;
+		transition: transform 0.25s ease-out;
 		z-index: 0;
+		box-shadow: 0 4px 12px -4px rgba(0, 224, 179, 0.55);
 	}
 
 	.language-toggle input:checked ~ .toggle-slider {
@@ -281,45 +310,50 @@ document.addEventListener('DOMContentLoaded', function() {
 			position: absolute;
 			top: 100%;
 			right: 0;
-			background: rgba(0,0,0,0.97);
+			background: rgba(19, 19, 19, 0.92);
+			backdrop-filter: blur(20px) saturate(140%);
+			-webkit-backdrop-filter: blur(20px) saturate(140%);
 			flex-direction: column;
 			align-items: flex-end;
 			gap: 0;
-			width: 220px;
+			width: 240px;
 			max-height: 0;
 			overflow: hidden;
 			opacity: 0;
-			border-radius: 0 0 0 12px;
-			box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+			border-radius: 0 0 0 var(--radius-lg);
+			box-shadow: var(--shadow-ambient);
+			border: 1px solid var(--outline-soft);
+			border-top: none;
 			transition: max-height 0.3s, opacity 0.3s;
 			z-index: 150;
 		}
 		.nav-links.open {
-			max-height: 500px;
+			max-height: 520px;
 			opacity: 1;
 			padding: 1rem 0;
 		}
 		.nav-link {
 			width: 100%;
 			text-align: right;
-			padding: 0.8rem 1.5rem;
-			font-size: 1.1rem;
+			padding: 0.85rem 1.5rem;
+			font-size: 1rem;
+		}
+		.nav-link.active::after {
+			display: none;
 		}
 		.nav-link.external {
-			margin-top: 0.5rem;
+			margin: 0.5rem 1.5rem 0;
+			text-align: center;
 		}
 		.language-toggle {
-			margin: 0.5rem 1.5rem 0;
+			margin: 0.75rem 1.5rem 0;
 			align-self: center;
 		}
 		.logo-image {
 			height: 30px;
 		}
 		.logo-link span {
-			font-size: 1.2rem;
-		}
-		.site-footer {
-			padding:0;
+			font-size: 1.1rem;
 		}
 	}
 </style> 
