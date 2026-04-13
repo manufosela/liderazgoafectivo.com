@@ -85,7 +85,6 @@ interface CommonCopy {
   ogLocale: string;
   htmlLang: string;
   footerRights: string;
-  counterAlt: string;
   externalLinkLabel: string;
   externalLinkUrl: string;
   languageToggleLabel: string;
