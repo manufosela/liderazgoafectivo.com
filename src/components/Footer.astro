@@ -13,11 +13,6 @@ const trademark = lang === 'es' ? '®' : '';
 ---
 <footer class="site-footer">
   <p>© {currentYear} {translations.common.siteName}{trademark} - {translations.common.footerRights}</p>
-  <div class="librecounterLayer">
-    <a class="credit-links" href="https://librecounter.org/referer/show" target="_blank">
-      <img style="padding-left: 1rem;" src="https://librecounter.org/counter.svg" alt={translations.common.counterAlt} width="30" height="30">
-    </a>
-  </div>
 </footer>
 
 <style>
@@ -46,22 +41,6 @@ const trademark = lang === 'es' ? '®' : '';
     margin: 0;
     font-size: 0.82rem;
     letter-spacing: 0.01em;
-  }
-
-  .librecounterLayer {
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .librecounterLayer .credit-links {
-    opacity: 0.45;
-    transition: opacity 0.25s ease-out;
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .librecounterLayer .credit-links:hover {
-    opacity: 1;
   }
 
   @media (max-width: 768px) {
