@@ -1,0 +1,71 @@
+{
+  "kj_version": "5.30.0",
+  "generated_at": "2026-11-18T23:16:29.587Z",
+  "generation": {
+    "profile": "standard",
+    "cmds": {
+      "testSkippedByCi": true
+    },
+    "baseBranch": "main",
+    "commitConvention": "conventional"
+  },
+  "who": {
+    "gh": "manufosela",
+    "grade": "declarada"
+  },
+  "files": [
+    {
+      "file": ".claude/settings.local.json",
+      "sha256": "327739a6b9816cb83d3097e41aa8acb28aa4f93237e2f5a0c9201737e7ec0971",
+      "local": true
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "183f8e57c4e982bd6342b31aac5779a8bd00de1300f7afbb465b2ef52c17d0ac"
+    },
+    {
+      "file": ".github/workflows/kj-no-ai-attribution.yml",
+      "sha256": "4f0e98f51608ed68fb855f8876b4714e1ecd9a07344b517c88bb3bba6884bdea"
+    },
+    {
+      "file": ".github/workflows/kj-secrets.yml",
+      "sha256": "b7374a559d55030571f2326c9c651137e435f95378ac9a920006de464962a0a1"
+    },
+    {
+      "file": ".github/workflows/kj-verdicts.yml",
+      "sha256": "2c10222ff129e5f83bdecdd6ecac3435d45b089bfec657f24789f90ff4603a00"
+    },
+    {
+      "file": ".karajan/hooks/commit-msg",
+      "sha256": "e740e2d05d40fe5ae7a776c4ae94979f602dd091ac4b5fc29ec2f43d8d7365e5"
+    },
+    {
+      "file": ".karajan/hooks/post-merge",
+      "sha256": "fe01565c613e6ef410ae8efb97628da7c22ac1fd72be2e2dae2a2531f2bd7c88"
+    },
+    {
+      "file": ".karajan/hooks/pre-commit",
+      "sha256": "206041e5f65bd89afe624277dfacab667b12b4eb4e2d8c82e62b441c17415c67"
+    },
+    {
+      "file": ".karajan/hooks/pre-push",
+      "sha256": "66535df0f9a46d7d80c91996e8ef5386a19e278ecfdbeb70900a268df6fdc334"
+    },
+    {
+      "file": ".karajan/hooks/prepare-commit-msg",
+      "sha256": "e61d46c11e9b7928aa168a1f9a2081203df9a9fa236e41b39ba1fba240ab08ef"
+    }
+  ],
+  "signature": {
+    "cid": "8631f1b1307e667480bc451f52082ead",
+    "nonce": "c4ef86e3a3fa0587b9ae2754e9255b0d",
+    "project": "manufosela/liderazgoafectivo.com",
+    "filesHash": "024f8fd95c1b90930ed192c6488f01bd98ccf8e2cb5f1e448aacfb9e3b8943ed",
+    "v": 2,
+    "kjVersion": "5.30.0",
+    "issuedMs": 1795043777846,
+    "expiresMs": 1795043927846,
+    "signer": "EgMc2b95g5nUh8e6LDCeLjv7G69cQaszUCIy+3aLpPQ=",
+    "signature": "6gy8oAXc8kOWCWzBGft1keYG9lbXWr9PPoALYest3Nxu3qwPd5uo/9A3NyA5ehQm1lYUENullg/rHiEG8ADyAQ=="
+  }
+}
