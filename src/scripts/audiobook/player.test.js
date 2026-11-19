@@ -27,11 +27,11 @@ const chapters = [
   { id: '001', title: 'Prólogo', duration: 240.2 },
 ];
 const session = { token: 'a.b', expiresAt: new Date(Date.now() + 60_000).toISOString() };
-const copy = { expired: 'caducada', unavailable: 'no disponible', network: 'sin red' };
+const copy = { expired: 'caducada', unavailable: 'no disponible', network: 'sin red', resume: 'Continuar {title} en {time}' };
 const statusOf = (root) => root.querySelector('[data-status]').textContent;
 
 const buildRoot = ({ native = false } = {}) => {
-  document.body.innerHTML = `<section><p data-now-playing></p><audio controls></audio><p data-status></p><ol data-chapters></ol></section>`;
+  document.body.innerHTML = `<section><p data-now-playing></p><audio controls></audio><button data-resume hidden></button><p data-status></p><ol data-chapters></ol></section>`;
   const root = document.querySelector('section');
   const audio = root.querySelector('audio');
   audio.canPlayType = () => (native ? 'maybe' : '');
@@ -45,6 +45,7 @@ const clickChapter = (root, id) => root.querySelector(`button[data-id="${id}"]`)
 
 beforeEach(() => {
   hls.instances.length = 0;
+  localStorage.clear();
   serveCatalog();
 });
 
@@ -115,6 +116,32 @@ describe('startPlayer', () => {
     audio.dispatchEvent(new Event('error'));
 
     expect(statusOf(root)).toBe('no disponible');
+  });
+
+  it('remembers where the listener is, without the session, and offers to resume there next time', async () => {
+    const first = buildRoot();
+    await startPlayer({ root: first.root, session, copy });
+    clickChapter(first.root, '001');
+    first.audio.currentTime = 93.6;
+    first.audio.dispatchEvent(new Event('timeupdate'));
+    expect(JSON.stringify({ ...localStorage })).not.toContain(session.token);
+
+    const second = buildRoot();
+    await startPlayer({ root: second.root, session, copy });
+    const resume = second.root.querySelector('[data-resume]');
+    expect([resume.hidden, resume.textContent]).toEqual([false, 'Continuar Prólogo en 1:33']);
+    resume.click();
+    second.audio.dispatchEvent(new Event('loadedmetadata'));
+
+    expect([second.audio.currentTime, resume.hidden]).toEqual([93, true]);
+  });
+
+  it('offers nothing to resume on a first visit', async () => {
+    const { root } = buildRoot();
+
+    await startPlayer({ root, session, copy });
+
+    expect(root.querySelector('[data-resume]').hidden).toBe(true);
   });
 
   it('warns when the two-hour session runs out', async () => {

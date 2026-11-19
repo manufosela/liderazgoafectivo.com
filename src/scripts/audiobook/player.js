@@ -1,6 +1,17 @@
 import Hls from 'hls.js/light';
-import { fetchCatalog, mediaUrl, nextChapterId } from './player-model.js';
-import { markCurrent, renderChapters } from './player-view.js';
+import { createProgressStore, fetchCatalog, mediaUrl, nextChapterId } from './player-model.js';
+import { markCurrent, renderChapters, resumeLabel } from './player-view.js';
+
+const SAVE_EVERY_SECONDS = 5;
+
+const openProgressStore = () => {
+  try {
+    return createProgressStore(globalThis.localStorage);
+  } catch {
+    // Some browsers throw on the localStorage getter itself: there is no resume point then.
+    return { save: () => false, load: () => null };
+  }
+};
 
 /** Which message a fatal hls.js error deserves: the service answers 401 once the session is over. */
 const hlsProblem = (error) => {
@@ -17,6 +28,9 @@ export const startPlayer = async ({ root, session, copy }) => {
   const audio = root.querySelector('audio');
   const status = root.querySelector('[data-status]');
   const nowPlaying = root.querySelector('[data-now-playing]');
+  const resume = root.querySelector('[data-resume]');
+  const progress = openProgressStore();
+  let lastSaved = 0;
   const showProblem = (reason) => {
     status.textContent = copy[reason];
   };
@@ -28,7 +42,7 @@ export const startPlayer = async ({ root, session, copy }) => {
   let hls = null;
   let current = null;
 
-  const play = (id) => {
+  const play = (id, position = 0) => {
     current = chapters.find((chapter) => chapter.id === id);
     const source = mediaUrl(`/chapters/${id}/index.m3u8`, session.token);
     status.textContent = '';
@@ -42,7 +56,14 @@ export const startPlayer = async ({ root, session, copy }) => {
       hls.attachMedia(audio);
     }
     // Autoplay may be refused by the browser; the listener then presses play on the visible control.
-    audio.addEventListener('loadedmetadata', () => audio.play().catch(() => {}), { once: true });
+    audio.addEventListener(
+      'loadedmetadata',
+      () => {
+        audio.currentTime = position;
+        audio.play().catch(() => {});
+      },
+      { once: true },
+    );
     nowPlaying.textContent = current.title;
     markCurrent(list, id);
   };
@@ -59,5 +80,22 @@ export const startPlayer = async ({ root, session, copy }) => {
     const next = nextChapterId(chapters, current.id);
     if (next) play(next);
   });
+  // Only the chapter id and the whole second are kept on this device, never the session.
+  audio.addEventListener('timeupdate', () => {
+    if (!current || Math.abs(audio.currentTime - lastSaved) < SAVE_EVERY_SECONDS) return;
+    lastSaved = audio.currentTime;
+    progress.save({ chapterId: current.id, position: audio.currentTime });
+  });
+
+  const saved = progress.load();
+  const savedChapter = chapters.find((chapter) => chapter.id === saved?.chapterId);
+  if (savedChapter) {
+    resume.textContent = resumeLabel(copy.resume, savedChapter, saved.position);
+    resume.hidden = false;
+    resume.addEventListener('click', () => {
+      resume.hidden = true;
+      play(savedChapter.id, saved.position);
+    });
+  }
   setTimeout(() => showProblem('expired'), new Date(session.expiresAt) - Date.now());
 };

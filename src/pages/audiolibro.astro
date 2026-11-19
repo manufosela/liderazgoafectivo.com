@@ -52,11 +52,13 @@ if (!copy) throw new Error('es.json has no audiobook section');
 			data-expired={copy.player.expired}
 			data-unavailable={copy.player.unavailable}
 			data-network={copy.errors.network}
+			data-resume={copy.player.resume}
 			hidden
 		>
 			<p id="audiobook-welcome" class="audiobook__welcome" tabindex="-1">{copy.welcome}</p>
 			<p class="audiobook__now" aria-live="polite" data-now-playing></p>
 			<audio class="audiobook__audio" controls controlslist="nodownload" preload="none"></audio>
+			<button type="button" class="submit-button audiobook__resume" data-resume hidden></button>
 			<p class="audiobook__message" role="alert" data-status></p>
 			<h2 class="audiobook__chapters-heading">{copy.player.chapters}</h2>
 			<ol class="audiobook__chapters" data-chapters></ol>
