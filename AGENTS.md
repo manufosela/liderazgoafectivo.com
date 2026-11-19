@@ -23,6 +23,7 @@
 - Use `npm run test` before every push; it ensures the build artifact is production-ready without requiring TypeScript tooling.
 - After building, spot-check via `npm run preview`, validating responsive breakpoints and localized copy.
 - When introducing automated tests, colocate them with the relevant component/page and document the execution command in this file.
+- Audiobook backend (`functions/`, an npm workspace): `npm run test` also runs its Vitest suite, so CI runs it too.
 
 ## Commit & Pull Request Guidelines
 - Mirror the repository’s conventional commit style (`feat:`, `fix:`, `docs:`); concise Spanish descriptions are welcome if they stay consistent.
