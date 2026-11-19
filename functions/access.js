@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const EMAIL_MAX_LENGTH = 254;
+const WHITESPACE = /\s/;
 const CODE_PATTERN = /^[A-Z0-9]{12}$/;
 const SECRET_MIN_LENGTH = 32;
 
@@ -19,10 +19,18 @@ const assertSecret = (secret) => {
   }
 };
 
+// Linear check (no backtracking regex): one "@", a local part, and a domain with an inner dot.
+const isEmail = (email) => {
+  const at = email.indexOf('@');
+  const domain = email.slice(at + 1);
+  const dot = domain.lastIndexOf('.');
+  return at > 0 && at === email.lastIndexOf('@') && dot > 0 && dot < domain.length - 1 && !WHITESPACE.test(email);
+};
+
 const normaliseEmail = (value) => {
   if (typeof value !== 'string') throw new AccessDeniedError();
   const email = value.normalize('NFC').trim().toLowerCase();
-  if (email.length > EMAIL_MAX_LENGTH || !EMAIL_PATTERN.test(email)) throw new AccessDeniedError();
+  if (email.length > EMAIL_MAX_LENGTH || !isEmail(email)) throw new AccessDeniedError();
   return email;
 };
 

@@ -55,6 +55,11 @@ describe('validateAccess', () => {
     { code: 42, email },
     { code, email: null },
     { code, email: 'not-an-email' },
+    { code, email: '@example.com' },
+    { code, email: 'lectora@@example.com' },
+    { code, email: 'lectora@example.' },
+    { code, email: 'lectora@.com' },
+    { code, email: 'lec tora@example.com' },
     { code: 'SHORT', email },
   ])('rejects malformed input %o', async (input) => {
     await deniedError(validateAccess(input, { grants: storeWithGrant(), secret }));
