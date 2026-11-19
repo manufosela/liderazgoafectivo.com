@@ -96,6 +96,7 @@ interface AudiobookCopy {
     chapters: string;
     expired: string;
     unavailable: string;
+    resume: string;
   };
 }
 
