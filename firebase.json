@@ -1,0 +1,16 @@
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "audiolibro",
+      "runtime": "nodejs24",
+      "ignore": ["node_modules", "*.test.js", "firebase-debug.log", "firebase-debug.*.log", "*.local"]
+    }
+  ],
+  "firestore": [
+    {
+      "database": "audiolibro",
+      "rules": "firestore.audiolibro.rules"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 # build output
 dist/
+functions/coverage/
 
 # generated types
 .astro/
