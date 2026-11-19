@@ -45,8 +45,21 @@ if (!copy) throw new Error('es.json has no audiobook section');
 			</form>
 		</section>
 
-		<section id="audiobook-player" class="audiobook__player" aria-labelledby="audiobook-welcome" hidden>
+		<section
+			id="audiobook-player"
+			class="audiobook__player"
+			aria-labelledby="audiobook-welcome"
+			data-expired={copy.player.expired}
+			data-unavailable={copy.player.unavailable}
+			data-network={copy.errors.network}
+			hidden
+		>
 			<p id="audiobook-welcome" class="audiobook__welcome" tabindex="-1">{copy.welcome}</p>
+			<p class="audiobook__now" aria-live="polite" data-now-playing></p>
+			<audio class="audiobook__audio" controls controlslist="nodownload" preload="none"></audio>
+			<p class="audiobook__message" role="alert" data-status></p>
+			<h2 class="audiobook__chapters-heading">{copy.player.chapters}</h2>
+			<ol class="audiobook__chapters" data-chapters></ol>
 		</section>
 	</main>
 
@@ -55,6 +68,12 @@ if (!copy) throw new Error('es.json has no audiobook section');
 
 <script>
 	import { requestSession } from '../scripts/audiobook/access.js';
+
+	// The player (and hls.js) is only downloaded once the listener has signed in.
+	document.querySelector('#audiobook-player').addEventListener('audiobook:session', async ({ currentTarget: root, detail: session }) => {
+		const { startPlayer } = await import('../scripts/audiobook/player.js');
+		await startPlayer({ root, session, copy: root.dataset });
+	});
 
 	const form = document.querySelector('#audiobook-form');
 	const message = document.querySelector('#audiobook-message');

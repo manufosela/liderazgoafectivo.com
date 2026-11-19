@@ -92,6 +92,11 @@ interface AudiobookCopy {
   submitting: string;
   errors: Record<'accessDenied' | 'tooManyAttempts' | 'unavailable' | 'network', string>;
   welcome: string;
+  player: {
+    chapters: string;
+    expired: string;
+    unavailable: string;
+  };
 }
 
 interface CommonCopy {
