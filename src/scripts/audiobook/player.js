@@ -2,6 +2,12 @@ import Hls from 'hls.js/light';
 import { fetchCatalog, mediaUrl, nextChapterId } from './player-model.js';
 import { markCurrent, renderChapters } from './player-view.js';
 
+/** Which message a fatal hls.js error deserves: the service answers 401 once the session is over. */
+const hlsProblem = (error) => {
+  if (error.response?.code === 401) return 'expired';
+  return error.type === 'networkError' ? 'network' : 'unavailable';
+};
+
 /**
  * Chapter player over the protected HLS service. Safari plays HLS natively; other browsers use hls.js.
  * @param {{root: HTMLElement, session: {token: string, expiresAt: string}, copy: DOMStringMap}} options
@@ -31,6 +37,7 @@ export const startPlayer = async ({ root, session, copy }) => {
       audio.src = source;
     } else {
       hls = new Hls();
+      hls.on(Hls.Events.ERROR, (_, error) => error.fatal && showProblem(hlsProblem(error)));
       hls.loadSource(source);
       hls.attachMedia(audio);
     }
@@ -46,8 +53,11 @@ export const startPlayer = async ({ root, session, copy }) => {
     if (button) play(button.dataset.id);
   });
   audio.addEventListener('contextmenu', (event) => event.preventDefault());
+  // hls.js reports its own errors; this one only fires for native HLS (Safari).
+  audio.addEventListener('error', () => native && showProblem('unavailable'));
   audio.addEventListener('ended', () => {
     const next = nextChapterId(chapters, current.id);
     if (next) play(next);
   });
+  setTimeout(() => showProblem('expired'), new Date(session.expiresAt) - Date.now());
 };
