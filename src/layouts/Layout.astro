@@ -8,6 +8,10 @@ interface Props {
 	lang: Lang;
 	translations: Translations;
 	alternateUrls?: Partial<Record<Lang | 'x-default', string>>;
+	/** Private pages: keep them out of search engines. */
+	noindex?: boolean;
+	/** Private pages load no third-party script. */
+	analytics?: boolean;
 }
 
 const {
@@ -17,6 +21,8 @@ const {
 	lang,
 	translations,
 	alternateUrls = {},
+	noindex = false,
+	analytics = true,
 } = Astro.props;
 
 const siteName = translations.common.siteName;
@@ -98,6 +104,7 @@ const websiteSchema = {
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		<meta name="description" content={description} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<link rel="canonical" href={canonicalUrl} />
 
 		<!-- Alternate language URLs -->
@@ -129,7 +136,7 @@ const websiteSchema = {
 		<script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
 
 		<!-- Analytics -->
-		<script defer src="https://stats.manulitics.com/script.js" data-website-id="1e5e5f8c-ce49-48ff-bd58-2360630deceb"></script>
+		{analytics && <script defer src="https://stats.manulitics.com/script.js" data-website-id="1e5e5f8c-ce49-48ff-bd58-2360630deceb"></script>}
 	</head>
 	<body>
 		<slot />

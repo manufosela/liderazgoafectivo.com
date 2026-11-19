@@ -78,6 +78,22 @@ interface ContactCopy {
   };
 }
 
+interface AudiobookCopy {
+  meta: MetaCopy;
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  fields: {
+    email: string;
+    code: string;
+  };
+  codeHint: string;
+  submit: string;
+  submitting: string;
+  errors: Record<'accessDenied' | 'tooManyAttempts' | 'unavailable' | 'network', string>;
+  welcome: string;
+}
+
 interface CommonCopy {
   siteName: string;
   bookDescription: string;
@@ -107,6 +123,8 @@ export interface Translations {
   preview: PreviewCopy;
   blog: BlogCopy;
   contact: ContactCopy;
+  /** Spanish only: the audiobook is in Spanish and its page is private. */
+  audiobook?: AudiobookCopy;
 }
 
 const buildTranslations = <T extends Record<Lang, Translations>>(data: T) => data;
