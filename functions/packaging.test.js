@@ -39,7 +39,8 @@ describe('ffmpeg settings', () => {
   it('encodes encrypted HLS in AAC mono with the shared gain and limiter', () => {
     const args = hlsArguments({ input: '/in/001.mp3', outputDir: '/out/001', keyInfoPath: '/tmp/keys/001.keyinfo', gainDb: 4.3 });
 
-    expect(args).toEqual(expect.arrayContaining(['-hls_key_info_file', '/tmp/keys/001.keyinfo', '-hls_playlist_type', 'vod', '-ac', '1', '-b:a', '96k']));
+    // 128k: at 96k the AAC encoder overshoots the limiter ceiling on some passages.
+    expect(args).toEqual(expect.arrayContaining(['-hls_key_info_file', '/tmp/keys/001.keyinfo', '-hls_playlist_type', 'vod', '-ac', '1', '-b:a', '128k']));
     expect(args[args.indexOf('-af') + 1]).toBe('volume=4.30dB,alimiter=limit=0.7:level=false:attack=5:release=50');
     expect(args.at(-1)).toBe('/out/001/index.m3u8');
   });

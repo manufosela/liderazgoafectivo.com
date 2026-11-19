@@ -9,6 +9,8 @@ const MEDIA_KEY_MIN_LENGTH = 32;
 const CHAPTER_KEY_BYTES = 16;
 // Same loudness chain as the M4B edition, so both sound alike.
 const PEAK_LIMIT = 0.7;
+// At 96k the AAC encoder overshoots the limiter ceiling on some passages (0.0 dBFS); 128k keeps -3.1 dBFS.
+const AUDIO_BITRATE = '128k';
 
 /** Three-digit chapter id used in object paths and key derivation. */
 export const chapterId = (number) => {
@@ -33,7 +35,7 @@ export const keyInfoFile = (keyPath) => `${KEY_URI_PLACEHOLDER}\n${keyPath}\n`;
 export const hlsArguments = ({ input, outputDir, keyInfoPath, gainDb }) => [
   '-y', '-v', 'error', '-i', input, '-vn',
   '-af', `volume=${gainDb.toFixed(2)}dB,alimiter=limit=${PEAK_LIMIT}:level=false:attack=5:release=50`,
-  '-c:a', 'aac', '-b:a', '96k', '-ac', '1', '-ar', '44100',
+  '-c:a', 'aac', '-b:a', AUDIO_BITRATE, '-ac', '1', '-ar', '44100',
   '-f', 'hls', '-hls_time', String(SEGMENT_SECONDS), '-hls_playlist_type', 'vod', '-hls_segment_type', 'mpegts',
   '-hls_key_info_file', keyInfoPath,
   '-hls_segment_filename', join(outputDir, 'seg-%04d.ts'),
