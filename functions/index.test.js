@@ -12,8 +12,15 @@ vi.mock('./database.js', () => ({
     return { collection: () => ({ doc: () => ({}) }) };
   },
 }));
+vi.mock('./media-store.js', () => ({
+  getAudiobookBucket: () => {
+    database.buckets = (database.buckets ?? 0) + 1;
+    return {};
+  },
+  createBucketMediaStore: () => ({ read: async () => null }),
+}));
 
-const { startSession } = await import('./index.js');
+const { audio, startSession } = await import('./index.js');
 
 const respond = () => {
   const response = { headers: {} };
@@ -37,5 +44,23 @@ describe('startSession function', () => {
 
     expect(first.statusCode).toBe(403);
     expect(database.opened).toBe(1);
+  });
+});
+
+describe('audio function', () => {
+  it('runs in Europe with the session and media keys', () => {
+    expect(audio.options).toMatchObject({ region: 'europe-west1', invoker: 'public' });
+    expect(audio.options.secrets.map(({ name }) => name)).toEqual(['AUDIOBOOK_SESSION_KEY', 'AUDIOBOOK_MEDIA_KEY']);
+  });
+
+  it('builds the handler once over the bucket and refuses requests without a session', async () => {
+    const request = { method: 'GET', path: '/catalog', query: {}, get: () => undefined };
+
+    const first = await audio(request, respond());
+    await audio(request, respond());
+
+    expect(first.statusCode).toBe(401);
+    expect(first.headers['Cache-Control']).toBe('private, no-store');
+    expect(database.buckets).toBe(1);
   });
 });

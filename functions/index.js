@@ -4,13 +4,17 @@ import { createFirestoreAttemptStore } from './attempt-store.js';
 import { createAttemptLimiter } from './attempts.js';
 import { getAudiobookDatabase } from './database.js';
 import { createFirestoreGrantStore } from './grant-store.js';
+import { createBucketMediaStore, getAudiobookBucket } from './media-store.js';
+import { createPlaybackHandler } from './playback-handler.js';
 import { createStartSessionHandler } from './start-session.js';
 
 const fingerprintKey = defineSecret('AUDIOBOOK_FINGERPRINT_KEY');
 const sessionKey = defineSecret('AUDIOBOOK_SESSION_KEY');
+const mediaKey = defineSecret('AUDIOBOOK_MEDIA_KEY');
 
-// Built on the first request, so loading this module during deploy never opens the database.
+// Handlers are built on the first request, so loading this module during deploy never opens the database.
 let startSessionHandler;
+let playbackHandler;
 
 export const startSession = onRequest(
   { region: 'europe-west1', invoker: 'public', maxInstances: 3, secrets: [fingerprintKey, sessionKey] },
@@ -26,5 +30,19 @@ export const startSession = onRequest(
       });
     })();
     return startSessionHandler(request, response);
+  },
+);
+
+export const audio = onRequest(
+  { region: 'europe-west1', invoker: 'public', maxInstances: 5, secrets: [sessionKey, mediaKey] },
+  (request, response) => {
+    playbackHandler ??= createPlaybackHandler({
+      grants: createFirestoreGrantStore(getAudiobookDatabase()),
+      media: createBucketMediaStore(getAudiobookBucket()),
+      sessionKey: () => sessionKey.value(),
+      mediaKey: () => mediaKey.value(),
+      now: () => new Date(),
+    });
+    return playbackHandler(request, response);
   },
 );
