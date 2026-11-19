@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getPageSetup } from '../i18n/translations';
+import '../styles/pages/contact.css';
+import '../styles/pages/audiobook.css';
+
+// Private page: outside PATHS, so it is never in the menu nor in the sitemap.
+const { lang, translations, navigationPaths, languageLinks } = getPageSetup('es', 'home');
+const copy = translations.audiobook;
+if (!copy) throw new Error('es.json has no audiobook section');
+---
+
+<Layout title={copy.meta.title} description={copy.meta.description} canonicalUrl={copy.meta.canonical} lang={lang} {translations} noindex analytics={false}>
+	<Header lang={lang} {translations} {navigationPaths} {languageLinks} />
+
+	<main class="audiobook">
+		<section id="audiobook-access" class="audiobook__access" aria-labelledby="audiobook-heading">
+			<span class="audiobook__eyebrow">{copy.eyebrow}</span>
+			<h1 id="audiobook-heading">{copy.heading}</h1>
+			<p class="audiobook__intro">{copy.intro}</p>
+
+			<form
+				id="audiobook-form"
+				class="contact-form audiobook__form"
+				data-submit={copy.submit}
+				data-submitting={copy.submitting}
+				data-access-denied={copy.errors.accessDenied}
+				data-too-many-attempts={copy.errors.tooManyAttempts}
+				data-unavailable={copy.errors.unavailable}
+				data-network={copy.errors.network}
+			>
+				<div class="form-group">
+					<label for="audiobook-email">{copy.fields.email}</label>
+					<input id="audiobook-email" name="email" type="email" autocomplete="email" required />
+				</div>
+				<div class="form-group">
+					<label for="audiobook-code">{copy.fields.code}</label>
+					<input id="audiobook-code" name="code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" required aria-describedby="audiobook-code-hint" />
+					<p id="audiobook-code-hint" class="audiobook__hint">{copy.codeHint}</p>
+				</div>
+				<p id="audiobook-message" class="audiobook__message" role="alert"></p>
+				<button type="submit" class="submit-button">{copy.submit}</button>
+			</form>
+		</section>
+
+		<section id="audiobook-player" class="audiobook__player" aria-labelledby="audiobook-welcome" hidden>
+			<p id="audiobook-welcome" class="audiobook__welcome" tabindex="-1">{copy.welcome}</p>
+		</section>
+	</main>
+
+	<Footer lang={lang} {translations} />
+</Layout>
+
+<script>
+	import { requestSession } from '../scripts/audiobook/access.js';
+
+	const form = document.querySelector('#audiobook-form');
+	const message = document.querySelector('#audiobook-message');
+	const button = form.querySelector('button[type="submit"]');
+	const copy = form.dataset;
+
+	const setBusy = (busy) => {
+		button.disabled = busy;
+		button.textContent = busy ? copy.submitting : copy.submit;
+		form.toggleAttribute('aria-busy', busy);
+	};
+
+	form.addEventListener('submit', async (event) => {
+		event.preventDefault();
+		if (!form.reportValidity()) return;
+		const data = new FormData(form);
+		message.textContent = '';
+		setBusy(true);
+		const result = await requestSession({ code: String(data.get('code')), email: String(data.get('email')) });
+		setBusy(false);
+		if (!result.ok) {
+			message.textContent = copy[result.reason];
+			return;
+		}
+		document.querySelector('#audiobook-access').hidden = true;
+		const player = document.querySelector('#audiobook-player');
+		player.hidden = false;
+		document.querySelector('#audiobook-welcome').focus();
+		// The player listens for this event; the session never leaves memory.
+		player.dispatchEvent(new CustomEvent('audiobook:session', { detail: result.session }));
+	});
+</script>
