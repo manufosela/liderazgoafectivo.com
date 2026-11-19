@@ -55,6 +55,20 @@ npm run dev
 │ └── index.astro
 └── package.json
 
+## 🎧 Audiolibro privado: códigos de acceso
+
+El backend del audiolibro vive en `functions/` (workspace de npm, Node 24). Cada código va unido a un correo y en la base solo se guardan sus huellas HMAC, nunca el código ni el correo.
+
+Para gestionar los códigos, con credenciales de Google con acceso al proyecto (`gcloud auth application-default login`), la variable `GOOGLE_CLOUD_PROJECT` apuntando al proyecto de Firebase y la clave de huellas de Secret Manager en `AUDIOBOOK_FINGERPRINT_KEY`:
+
+```bash
+npm run grants --workspace functions -- create --email <correo> --note <nota>
+npm run grants --workspace functions -- list
+npm run grants --workspace functions -- revoke <id-corto>
+```
+
+El código solo se muestra al crearlo. La lista enseña el id corto, el estado, la fecha y la nota, nunca el código.
+
 ## 📝 Licencia
 
 © 2024 Liderazgo Afectivo® - Todos los derechos reservados

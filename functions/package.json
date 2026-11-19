@@ -7,7 +7,8 @@
     "node": "24"
   },
   "scripts": {
-    "test": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "grants": "node grants-cli.js"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^3.2.7",
