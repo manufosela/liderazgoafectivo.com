@@ -86,5 +86,29 @@
       "linkedin": "LinkedIn",
       "personal": "Web Personal"
     }
+  },
+  "audiobook": {
+    "meta": {
+      "title": "Audiolibro - Liderazgo Afectivo",
+      "description": "Acceso privado al audiolibro de Liderazgo Afectivo.",
+      "canonical": "https://liderazgoafectivo.com/audiolibro"
+    },
+    "eyebrow": "Audiolibro",
+    "heading": "Escucha Liderazgo Afectivo",
+    "intro": "Introduce el correo y el código personal que recibiste para escuchar el audiolibro, capítulo a capítulo.",
+    "fields": {
+      "email": "Correo electrónico",
+      "code": "Código de acceso"
+    },
+    "codeHint": "Doce caracteres, con o sin guiones.",
+    "submit": "Entrar",
+    "submitting": "Comprobando…",
+    "errors": {
+      "accessDenied": "No hemos podido darte acceso con esos datos. Revisa el correo y el código.",
+      "tooManyAttempts": "Demasiados intentos. Espera unos minutos y vuelve a probar.",
+      "unavailable": "El audiolibro no está disponible en este momento. Inténtalo más tarde.",
+      "network": "No hay conexión. Comprueba tu red y vuelve a probar."
+    },
+    "welcome": "Acceso concedido. Tu sesión dura dos horas."
   }
 }
