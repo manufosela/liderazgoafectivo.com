@@ -1,0 +1,89 @@
+// @vitest-environment happy-dom
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+const hls = vi.hoisted(() => ({ instances: [] }));
+
+vi.mock('hls.js/light', () => ({
+  default: class {
+    constructor() {
+      hls.instances.push(this);
+    }
+    loadSource(source) {
+      this.source = source;
+    }
+    attachMedia() {}
+    destroy() {}
+  },
+}));
+
+const { startPlayer } = await import('./player.js');
+
+const chapters = [
+  { id: '000', title: 'Apertura', duration: 16.9 },
+  { id: '001', title: 'Prólogo', duration: 240.2 },
+];
+const session = { token: 'a.b', expiresAt: new Date(Date.now() + 60_000).toISOString() };
+const copy = { expired: 'caducada', unavailable: 'no disponible', network: 'sin red' };
+
+const buildRoot = ({ native = false } = {}) => {
+  document.body.innerHTML = `<section><p data-now-playing></p><audio controls></audio><p data-status></p><ol data-chapters></ol></section>`;
+  const root = document.querySelector('section');
+  const audio = root.querySelector('audio');
+  audio.canPlayType = () => (native ? 'maybe' : '');
+  audio.play = vi.fn(async () => {});
+  return { root, audio };
+};
+
+const serveCatalog = (status = 200, body = { chapters }) => vi.stubGlobal('fetch', vi.fn(async () => ({ status, json: async () => body })));
+
+const clickChapter = (root, id) => root.querySelector(`button[data-id="${id}"]`).click();
+
+beforeEach(() => {
+  hls.instances.length = 0;
+  serveCatalog();
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+describe('startPlayer', () => {
+  it('lists the chapters and loads only the chosen one through hls.js with the session', async () => {
+    const { root, audio } = buildRoot();
+    await startPlayer({ root, session, copy });
+
+    expect(root.querySelectorAll('[data-chapters] button')).toHaveLength(2);
+    expect(hls.instances).toHaveLength(0);
+    clickChapter(root, '001');
+    audio.dispatchEvent(new Event('loadedmetadata'));
+
+    expect(hls.instances[0].source).toMatch(/\/audio\/chapters\/001\/index\.m3u8\?session=a\.b$/);
+    expect(root.querySelector('[data-now-playing]').textContent).toBe('Prólogo');
+    expect(root.querySelector('button[data-id="001"]').getAttribute('aria-current')).toBe('true');
+    expect(audio.play).toHaveBeenCalled();
+  });
+
+  it('plays HLS natively on Safari and goes on with the next chapter when one ends', async () => {
+    const { root, audio } = buildRoot({ native: true });
+    await startPlayer({ root, session, copy });
+
+    clickChapter(root, '000');
+    expect(audio.src).toContain('/chapters/000/index.m3u8?session=a.b');
+    audio.dispatchEvent(new Event('ended'));
+
+    expect(audio.src).toContain('/chapters/001/index.m3u8');
+    expect(hls.instances).toHaveLength(0);
+  });
+
+  it.each([
+    [401, 'caducada'],
+    [500, 'no disponible'],
+  ])('shows the catalog failure %i to the listener', async (status, text) => {
+    serveCatalog(status, {});
+    const { root } = buildRoot();
+
+    await startPlayer({ root, session, copy });
+
+    expect(root.querySelector('[data-status]').textContent).toBe(text);
+  });
+});
