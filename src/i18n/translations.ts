@@ -100,6 +100,33 @@ interface AudiobookCopy {
   };
 }
 
+interface AdminCopy {
+  meta: MetaCopy;
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  signIn: string;
+  signOut: string;
+  createHeading: string;
+  fields: {
+    email: string;
+    note: string;
+  };
+  noteHint: string;
+  create: string;
+  resultLabel: string;
+  copy: string;
+  listHeading: string;
+  columns: Record<'id' | 'note' | 'date' | 'status' | 'actions', string>;
+  cancel: string;
+  /** Read by the panel script from the data attributes of the page. */
+  panel: Record<
+    | 'active' | 'revoked' | 'revoke' | 'notAdmin' | 'invalidInput' | 'notFound' | 'unavailable' | 'network'
+    | 'signInFailed' | 'copied' | 'copyFailed' | 'share' | 'confirmRevoke' | 'configMissing',
+    string
+  >;
+}
+
 interface CommonCopy {
   siteName: string;
   bookDescription: string;
@@ -131,6 +158,8 @@ export interface Translations {
   contact: ContactCopy;
   /** Spanish only: the audiobook is in Spanish and its page is private. */
   audiobook?: AudiobookCopy;
+  /** Spanish only: the private admin of the audiobook codes. */
+  admin?: AdminCopy;
 }
 
 const buildTranslations = <T extends Record<Lang, Translations>>(data: T) => data;
