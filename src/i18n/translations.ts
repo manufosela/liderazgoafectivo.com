@@ -119,11 +119,11 @@ interface AdminCopy {
   resultLabel: string;
   copy: string;
   listHeading: string;
-  columns: Record<'id' | 'note' | 'date' | 'status' | 'actions', string>;
+  columns: Record<'id' | 'email' | 'note' | 'date' | 'status' | 'actions', string>;
   cancel: string;
   /** Read by the panel script from the data attributes of the page. */
   panel: Record<
-    | 'active' | 'revoked' | 'revoke' | 'notAdmin' | 'invalidInput' | 'notFound' | 'unavailable' | 'network'
+    | 'active' | 'revoked' | 'revoke' | 'unknownEmail' | 'notAdmin' | 'invalidInput' | 'notFound' | 'unavailable' | 'network'
     | 'signInFailed' | 'copied' | 'copyFailed' | 'share' | 'confirmRevoke' | 'configMissing',
     string
   >;

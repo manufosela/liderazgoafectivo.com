@@ -60,10 +60,19 @@ export const createGrant = async ({ email, note }, { grants, secret, now, pick }
   return { code, shortId: shortIdOf(grant.id) };
 };
 
-/** @returns {Promise<Array<{shortId: string, note: string, createdAt: Date, status: 'active' | 'revoked'}>>} */
+/**
+ * Grants created before emails were kept have none: their email is null, it cannot be recovered from the fingerprint.
+ * @returns {Promise<Array<{shortId: string, email: string | null, note: string, createdAt: Date, status: 'active' | 'revoked'}>>}
+ */
 export const listGrants = async ({ grants }) =>
   (await grants.list())
-    .map(({ id, note, createdAt, revoked }) => ({ shortId: shortIdOf(id), note, createdAt, status: revoked === false ? 'active' : 'revoked' }))
+    .map(({ id, email, note, createdAt, revoked }) => ({
+      shortId: shortIdOf(id),
+      email: email ?? null,
+      note,
+      createdAt,
+      status: revoked === false ? 'active' : 'revoked',
+    }))
     .toSorted((first, second) => first.createdAt - second.createdAt);
 
 /** Revokes the single grant whose id starts with the short id shown by listGrants. */

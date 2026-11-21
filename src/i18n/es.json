@@ -139,6 +139,7 @@
     "listHeading": "Códigos",
     "columns": {
       "id": "Id",
+      "email": "Correo",
       "note": "Nota",
       "date": "Fecha",
       "status": "Estado",
@@ -149,6 +150,7 @@
       "active": "Activo",
       "revoked": "Revocado",
       "revoke": "Revocar",
+      "unknownEmail": "Sin correo (código antiguo)",
       "notAdmin": "Esa cuenta no tiene permiso.",
       "invalidInput": "Revisa el correo y la nota (hasta 80 caracteres).",
       "notFound": "Ese código ya no existe. Recarga la lista.",
