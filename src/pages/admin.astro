@@ -1,53 +1,55 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { getPageSetup } from '../i18n/translations';
-import '../styles/pages/contact.css';
-import '../styles/pages/audiobook.css';
+import { getTranslations } from '../i18n/translations';
 import '../styles/pages/admin.css';
 
-// Private page: outside PATHS, so it is never in the menu nor in the sitemap.
-const { lang, translations, navigationPaths, languageLinks } = getPageSetup('es', 'home');
-const copy = translations.admin;
+// Private page and its own site: no layout, menu, styles or analytics of the public web.
+// Outside PATHS, so it is never in the menu nor in the sitemap.
+const copy = getTranslations('es').admin;
 if (!copy) throw new Error('es.json has no admin section');
 // The panel script reads its messages from data-* attributes (dataset turns them back into camelCase).
 const panelCopy = Object.fromEntries(Object.entries(copy.panel).map(([key, text]) => [`data-${key.replaceAll(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`, text]));
 ---
 
-<Layout title={copy.meta.title} description={copy.meta.description} canonicalUrl={copy.meta.canonical} lang={lang} {translations} noindex analytics={false}>
-	<Header lang={lang} {translations} {navigationPaths} {languageLinks} />
-
-	<main id="admin" class="audiobook admin" {...panelCopy}>
-		<span class="audiobook__eyebrow">{copy.eyebrow}</span>
-		<h1>{copy.heading}</h1>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>{copy.title}</title>
+	</head>
+	<body class="admin">
+	<div id="admin" class="admin__app" {...panelCopy}>
 		<p class="admin__status" role="status" data-status></p>
 
 		<section class="admin__login" data-login>
-			<p class="audiobook__intro">{copy.intro}</p>
-			<button type="button" class="submit-button" data-sign-in>{copy.signIn}</button>
+			<button type="button" class="admin__button" data-sign-in>{copy.signIn}</button>
 		</section>
 
-		<section class="admin__panel" data-panel hidden>
-			<button type="button" class="admin__sign-out" data-sign-out>{copy.signOut}</button>
-			<form class="contact-form audiobook__form" data-create>
+		<div class="admin__panel" data-panel hidden>
+			<header class="admin__bar">
+				<span class="admin__brand">{copy.title}</span>
+				<nav class="admin__sections" aria-label={copy.sectionsLabel}>
+					<a href="/admin/" aria-current="page">{copy.sections.audiobook}</a>
+				</nav>
+				<button type="button" class="admin__ghost" data-sign-out>{copy.signOut}</button>
+			</header>
+
+			<main class="admin__main">
+			<h1>{copy.heading}</h1>
+			<form class="admin__form" data-create>
 				<h2>{copy.createHeading}</h2>
-				<div class="form-group">
-					<label for="admin-email">{copy.fields.email}</label>
-					<input id="admin-email" name="email" type="email" autocomplete="off" required />
-				</div>
-				<div class="form-group">
-					<label for="admin-note">{copy.fields.note}</label>
-					<input id="admin-note" name="note" type="text" maxlength="80" required aria-describedby="admin-note-hint" />
-					<p id="admin-note-hint" class="audiobook__hint">{copy.noteHint}</p>
-				</div>
-				<button type="submit" class="submit-button">{copy.create}</button>
+				<label for="admin-email">{copy.fields.email}</label>
+				<input id="admin-email" name="email" type="email" autocomplete="off" required />
+				<label for="admin-note">{copy.fields.note}</label>
+				<input id="admin-note" name="note" type="text" maxlength="80" required aria-describedby="admin-note-hint" />
+				<p id="admin-note-hint" class="admin__hint">{copy.noteHint}</p>
+				<button type="submit" class="admin__button">{copy.create}</button>
 			</form>
 
 			<div class="admin__result" data-result hidden>
 				<label for="admin-message">{copy.resultLabel}</label>
 				<textarea id="admin-message" rows="4" readonly data-message></textarea>
-				<button type="button" class="submit-button" data-copy>{copy.copy}</button>
+				<button type="button" class="admin__button" data-copy>{copy.copy}</button>
 			</div>
 
 			<h2>{copy.listHeading}</h2>
@@ -65,19 +67,19 @@ const panelCopy = Object.fromEntries(Object.entries(copy.panel).map(([key, text]
 					<tbody data-grants></tbody>
 				</table>
 			</div>
-		</section>
+			</main>
+		</div>
 
 		<dialog class="admin__dialog" aria-labelledby="admin-confirm-text" data-confirm>
 			<p id="admin-confirm-text" data-confirm-text></p>
 			<div class="admin__dialog-actions">
-				<button type="button" class="admin__sign-out" data-answer="cancel">{copy.cancel}</button>
-				<button type="button" class="submit-button" data-answer="confirm">{copy.panel.revoke}</button>
+				<button type="button" class="admin__ghost" data-answer="cancel">{copy.cancel}</button>
+				<button type="button" class="admin__button" data-answer="confirm">{copy.panel.revoke}</button>
 			</div>
 		</dialog>
-	</main>
-
-	<Footer lang={lang} {translations} />
-</Layout>
+	</div>
+	</body>
+</html>
 
 <script>
 	import { createAdminApi } from '../scripts/admin/api.js';

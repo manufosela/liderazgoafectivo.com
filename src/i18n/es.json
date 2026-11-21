@@ -119,14 +119,12 @@
     }
   },
   "admin": {
-    "meta": {
-      "title": "Admin del audiolibro - Liderazgo Afectivo",
-      "description": "Gestión privada de los códigos del audiolibro.",
-      "canonical": "https://liderazgoafectivo.com/admin"
+    "title": "Admin",
+    "sectionsLabel": "Secciones",
+    "sections": {
+      "audiobook": "Audiolibro"
     },
-    "eyebrow": "Admin",
     "heading": "Códigos del audiolibro",
-    "intro": "Entra con tu cuenta de Google para crear, ver y revocar códigos.",
     "signIn": "Entrar con Google",
     "signOut": "Cerrar sesión",
     "createHeading": "Nuevo código",
@@ -151,7 +149,7 @@
       "active": "Activo",
       "revoked": "Revocado",
       "revoke": "Revocar",
-      "notAdmin": "Esa cuenta no tiene permiso para gestionar el audiolibro.",
+      "notAdmin": "Esa cuenta no tiene permiso.",
       "invalidInput": "Revisa el correo y la nota (hasta 80 caracteres).",
       "notFound": "Ese código ya no existe. Recarga la lista.",
       "unavailable": "El servicio no responde. Inténtalo en unos minutos.",

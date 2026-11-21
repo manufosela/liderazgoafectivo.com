@@ -101,11 +101,12 @@ interface AudiobookCopy {
   };
 }
 
+/** The admin is its own site: before signing in nothing says what it manages. */
 interface AdminCopy {
-  meta: MetaCopy;
-  eyebrow: string;
+  title: string;
+  sectionsLabel: string;
+  sections: { audiobook: string };
   heading: string;
-  intro: string;
   signIn: string;
   signOut: string;
   createHeading: string;
