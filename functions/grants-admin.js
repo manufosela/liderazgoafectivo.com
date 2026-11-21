@@ -10,6 +10,22 @@ const SHORT_ID = /^[0-9a-f]{8}$/;
 
 const shortIdOf = (id) => id.slice(0, 8);
 
+/** The admin gave a wrong email, note or short id; safe to show back to them. */
+export class GrantInputError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'GrantInputError';
+  }
+}
+
+/** No grant matches the short id. */
+export class GrantNotFoundError extends Error {
+  constructor(shortId) {
+    super(`No grant matches ${shortId}`);
+    this.name = 'GrantNotFoundError';
+  }
+}
+
 /** @param {(max: number) => number} [pick] random index source, injectable for tests */
 export const generateCode = (pick = randomInt) => {
   const characters = Array.from({ length: CODE_LENGTH }, () => CODE_ALPHABET[pick(CODE_ALPHABET.length)]);
@@ -21,7 +37,7 @@ export const generateCode = (pick = randomInt) => {
 const normaliseNote = (note) => {
   const trimmed = typeof note === 'string' ? note.trim() : '';
   if (!trimmed || trimmed.length > NOTE_MAX_LENGTH) {
-    throw new Error(`The note must have between 1 and ${NOTE_MAX_LENGTH} characters`);
+    throw new GrantInputError(`The note must have between 1 and ${NOTE_MAX_LENGTH} characters`);
   }
   return trimmed;
 };
@@ -37,7 +53,7 @@ export const createGrant = async ({ email, note }, { grants, secret, now, pick }
   try {
     grant = createGrantRecord({ code, email }, { secret, now });
   } catch (error) {
-    if (error instanceof AccessDeniedError) throw new Error('The email is not valid');
+    if (error instanceof AccessDeniedError) throw new GrantInputError('The email is not valid');
     throw error;
   }
   await grants.create(grant.id, { ...grant.record, note: checkedNote });
@@ -52,9 +68,9 @@ export const listGrants = async ({ grants }) =>
 
 /** Revokes the single grant whose id starts with the short id shown by listGrants. */
 export const revokeGrant = async (shortId, { grants, now }) => {
-  if (!SHORT_ID.test(shortId)) throw new Error('The short id must be 8 hexadecimal characters');
+  if (!SHORT_ID.test(shortId)) throw new GrantInputError('The short id must be 8 hexadecimal characters');
   const matches = (await grants.list()).filter(({ id }) => id.startsWith(shortId));
-  if (matches.length === 0) throw new Error(`No grant matches ${shortId}`);
-  if (matches.length > 1) throw new Error(`More than one grant matches ${shortId}`);
+  if (matches.length === 0) throw new GrantNotFoundError(shortId);
+  if (matches.length > 1) throw new GrantInputError(`More than one grant matches ${shortId}`);
   await grants.revoke(matches[0].id, now);
 };
