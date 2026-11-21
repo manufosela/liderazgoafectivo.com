@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AccessDeniedError, validateAccess } from './access.js';
-import { createGrant, generateCode, listGrants, revokeGrant } from './grants-admin.js';
+import { GrantInputError, GrantNotFoundError, createGrant, generateCode, listGrants, revokeGrant } from './grants-admin.js';
 
 const secret = 'test-secret-with-at-least-32-characters';
 const now = new Date('2026-11-19T10:00:00Z');
@@ -50,11 +50,17 @@ describe('createGrant', () => {
     [{ email, note: 'x'.repeat(81) }, /note/],
     [{ email, note: 42 }, /note/],
   ])('rejects %o with a clear message', async (input, message) => {
-    await expect(createGrant(input, { grants: createMemoryStore(), secret, now })).rejects.toThrow(message);
+    const attempt = createGrant(input, { grants: createMemoryStore(), secret, now });
+
+    await expect(attempt).rejects.toThrow(message);
+    await expect(attempt).rejects.toBeInstanceOf(GrantInputError);
   });
 
   it('reports a misconfigured key as such, not as a bad email', async () => {
-    await expect(createGrant({ email, note: 'Nota' }, { grants: createMemoryStore(), secret: 'short', now })).rejects.toThrow(/secret/);
+    const attempt = createGrant({ email, note: 'Nota' }, { grants: createMemoryStore(), secret: 'short', now });
+
+    await expect(attempt).rejects.toThrow(/secret/);
+    await expect(attempt).rejects.not.toBeInstanceOf(GrantInputError);
   });
 });
 
@@ -80,13 +86,15 @@ describe('listGrants and revokeGrant', () => {
   });
 
   it.each([
-    ['cccccccc', /No grant/],
-    ['abcd1234', /More than one grant/],
-    ['ABC', /short id/],
-  ])('refuses to revoke %s', async (shortId, message) => {
+    ['cccccccc', /No grant/, GrantNotFoundError],
+    ['abcd1234', /More than one grant/, GrantInputError],
+    ['ABC', /short id/, GrantInputError],
+  ])('refuses to revoke %s', async (shortId, message, type) => {
     const record = { emailFingerprint: 'x', note: 'n', revoked: false, createdAt: now };
     const store = createMemoryStore([['abcd1234aa', record], ['abcd1234bb', record]]);
+    const attempt = revokeGrant(shortId, { grants: store, now });
 
-    await expect(revokeGrant(shortId, { grants: store, now })).rejects.toThrow(message);
+    await expect(attempt).rejects.toThrow(message);
+    await expect(attempt).rejects.toBeInstanceOf(type);
   });
 });
