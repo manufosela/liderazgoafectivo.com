@@ -43,6 +43,17 @@ describe('/admin page', () => {
     expect(panel.querySelector('[data-sign-out]')).not.toBeNull();
   });
 
+  it('splits the audiobook section in tabs: the codes open, creating one apart', () => {
+    const doc = page();
+    const tabs = [...doc.querySelectorAll('[data-panel] [role="tablist"] [role="tab"]')];
+    const panelOf = (tab) => doc.getElementById(tab.getAttribute('aria-controls'));
+
+    expect(tabs.map((tab) => tab.textContent.trim())).toEqual(['Códigos', 'Nuevo código']);
+    const [codes, create] = tabs.map(panelOf);
+    expect([codes.hidden, Boolean(codes.querySelector('[data-grants]'))]).toEqual([false, true]);
+    expect([create.hidden, Boolean(create.querySelector('[data-create]')), Boolean(create.querySelector('[data-result]'))]).toEqual([true, true, true]);
+  });
+
   it('is never indexed', () => {
     expect(page().querySelector('meta[name="robots"]').getAttribute('content')).toContain('noindex');
   });

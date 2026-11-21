@@ -36,8 +36,13 @@ const panelCopy = Object.fromEntries(Object.entries(copy.panel).map(([key, text]
 
 			<main class="admin__main">
 			<h1>{copy.heading}</h1>
+			<div class="admin__tabs" role="tablist" aria-label={copy.heading} data-tabs>
+				<button type="button" role="tab" id="admin-tab-codes" aria-controls="admin-codes" aria-selected="true">{copy.listHeading}</button>
+				<button type="button" role="tab" id="admin-tab-create" aria-controls="admin-create" aria-selected="false" tabindex="-1">{copy.createHeading}</button>
+			</div>
+
+			<section class="admin__tab-panel" role="tabpanel" id="admin-create" aria-labelledby="admin-tab-create" hidden>
 			<form class="admin__form" data-create>
-				<h2>{copy.createHeading}</h2>
 				<label for="admin-email">{copy.fields.email}</label>
 				<input id="admin-email" name="email" type="email" autocomplete="off" required />
 				<label for="admin-note">{copy.fields.note}</label>
@@ -51,8 +56,9 @@ const panelCopy = Object.fromEntries(Object.entries(copy.panel).map(([key, text]
 				<textarea id="admin-message" rows="4" readonly data-message></textarea>
 				<button type="button" class="admin__button" data-copy>{copy.copy}</button>
 			</div>
+			</section>
 
-			<h2>{copy.listHeading}</h2>
+			<section class="admin__tab-panel" role="tabpanel" id="admin-codes" aria-labelledby="admin-tab-codes">
 			<div class="admin__table-wrap">
 				<table class="admin__table">
 					<thead>
@@ -67,6 +73,7 @@ const panelCopy = Object.fromEntries(Object.entries(copy.panel).map(([key, text]
 					<tbody data-grants></tbody>
 				</table>
 			</div>
+			</section>
 			</main>
 		</div>
 
@@ -85,8 +92,10 @@ const panelCopy = Object.fromEntries(Object.entries(copy.panel).map(([key, text]
 	import { createAdminApi } from '../scripts/admin/api.js';
 	import { createGoogleAuth, readFirebaseConfig } from '../scripts/admin/firebase.js';
 	import { startPanel } from '../scripts/admin/panel.js';
+	import { startTabs } from '../scripts/admin/tabs.js';
 
 	const root = document.querySelector('#admin');
+	startTabs(root.querySelector('[data-tabs]'));
 	let config;
 	try {
 		config = readFirebaseConfig(import.meta.env);
