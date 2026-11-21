@@ -1,17 +1,19 @@
 import Hls from 'hls.js/light';
-import { createProgressStore, fetchCatalog, mediaUrl, nextChapterId } from './player-model.js';
+import { createProgressStore, createRateStore, fetchCatalog, mediaUrl, nextChapterId } from './player-model.js';
 import { markCurrent, renderChapters, resumeLabel } from './player-view.js';
 
 const SAVE_EVERY_SECONDS = 5;
 
-const openProgressStore = () => {
+// Some browsers throw on the localStorage getter itself: nothing is remembered then.
+const openStore = (create, blocked) => {
   try {
-    return createProgressStore(globalThis.localStorage);
+    return create(globalThis.localStorage);
   } catch {
-    // Some browsers throw on the localStorage getter itself: there is no resume point then.
-    return { save: () => false, load: () => null };
+    return blocked;
   }
 };
+const openProgressStore = () => openStore(createProgressStore, { save: () => false, load: () => null });
+const openRateStore = () => openStore(createRateStore, { save: () => false, load: () => 1 });
 
 /** Which message a fatal hls.js error deserves: the service answers 401 once the session is over. */
 const hlsProblem = (error) => {
@@ -60,6 +62,8 @@ export const startPlayer = async ({ root, session, copy }) => {
       'loadedmetadata',
       () => {
         audio.currentTime = position;
+        // A new source may come back at normal speed; the chosen one is the default rate.
+        audio.playbackRate = audio.defaultPlaybackRate;
         audio.play().catch(() => {});
       },
       { once: true },
@@ -67,6 +71,21 @@ export const startPlayer = async ({ root, session, copy }) => {
     nowPlaying.textContent = current.title;
     markCurrent(list, id);
   };
+
+  // Browsers keep the pitch when the rate changes, so a slower voice does not sound deeper.
+  const rateSelect = root.querySelector('[data-rate]');
+  const rates = openRateStore();
+  const applyRate = (rate) => {
+    audio.defaultPlaybackRate = rate;
+    audio.playbackRate = rate;
+    rateSelect.value = String(rate);
+  };
+  applyRate(rates.load());
+  rateSelect.addEventListener('change', () => {
+    const rate = Number(rateSelect.value);
+    applyRate(rate);
+    rates.save(rate);
+  });
 
   renderChapters(list, chapters);
   list.addEventListener('click', (event) => {

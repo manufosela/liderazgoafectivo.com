@@ -1,6 +1,10 @@
 /** Cloud Function that serves the catalog, playlists, keys and segments to a valid session. */
 export const AUDIO_BASE_URL = 'https://europe-west1-comunidad-liderazgoafectivo.cloudfunctions.net/audio';
 const PROGRESS_KEY = 'audiobook-progress';
+const RATE_KEY = 'audiobook-rate';
+
+/** Speeds offered to the listener: the voice reads fast, so two of them are slower than normal. */
+export const PLAYBACK_RATES = [0.8, 0.9, 1, 1.25];
 const CHAPTER_ID = /^\d{3}$/;
 
 /** URL of an audio service resource for this session; native Safari HLS needs the session in the URL. */
@@ -54,6 +58,29 @@ export const createProgressStore = (storage) => ({
       return CHAPTER_ID.test(chapterId) && Number.isInteger(position) && position >= 0 ? { chapterId, position } : null;
     } catch {
       return null;
+    }
+  },
+});
+
+/**
+ * Remembers the listening speed on this device; anything but an offered speed means normal speed.
+ * @param {Storage} storage
+ */
+export const createRateStore = (storage) => ({
+  save: (rate) => {
+    try {
+      storage.setItem(RATE_KEY, String(rate));
+      return true;
+    } catch {
+      return false;
+    }
+  },
+  load: () => {
+    try {
+      const rate = Number(storage.getItem(RATE_KEY));
+      return PLAYBACK_RATES.includes(rate) ? rate : 1;
+    } catch {
+      return 1;
     }
   },
 });

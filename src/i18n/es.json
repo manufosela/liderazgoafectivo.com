@@ -114,7 +114,8 @@
       "chapters": "Capítulos",
       "expired": "Tu sesión ha caducado. Recarga la página y vuelve a entrar con tu código.",
       "unavailable": "No se ha podido cargar el audiolibro. Inténtalo de nuevo en unos minutos.",
-      "resume": "Continuar «{title}» en {time}"
+      "resume": "Continuar «{title}» en {time}",
+      "speed": "Velocidad"
     }
   },
   "admin": {
