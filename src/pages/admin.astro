@@ -1,0 +1,97 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getPageSetup } from '../i18n/translations';
+import '../styles/pages/contact.css';
+import '../styles/pages/audiobook.css';
+
+// Private page: outside PATHS, so it is never in the menu nor in the sitemap.
+const { lang, translations, navigationPaths, languageLinks } = getPageSetup('es', 'home');
+const copy = translations.admin;
+if (!copy) throw new Error('es.json has no admin section');
+// The panel script reads its messages from data-* attributes (dataset turns them back into camelCase).
+const panelCopy = Object.fromEntries(Object.entries(copy.panel).map(([key, text]) => [`data-${key.replaceAll(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`, text]));
+---
+
+<Layout title={copy.meta.title} description={copy.meta.description} canonicalUrl={copy.meta.canonical} lang={lang} {translations} noindex analytics={false}>
+	<Header lang={lang} {translations} {navigationPaths} {languageLinks} />
+
+	<main id="admin" class="audiobook admin" {...panelCopy}>
+		<span class="audiobook__eyebrow">{copy.eyebrow}</span>
+		<h1>{copy.heading}</h1>
+		<p class="admin__status" role="status" data-status></p>
+
+		<section class="admin__login" data-login>
+			<p class="audiobook__intro">{copy.intro}</p>
+			<button type="button" class="submit-button" data-sign-in>{copy.signIn}</button>
+		</section>
+
+		<section class="admin__panel" data-panel hidden>
+			<button type="button" class="admin__sign-out" data-sign-out>{copy.signOut}</button>
+			<form class="contact-form audiobook__form" data-create>
+				<h2>{copy.createHeading}</h2>
+				<div class="form-group">
+					<label for="admin-email">{copy.fields.email}</label>
+					<input id="admin-email" name="email" type="email" autocomplete="off" required />
+				</div>
+				<div class="form-group">
+					<label for="admin-note">{copy.fields.note}</label>
+					<input id="admin-note" name="note" type="text" maxlength="80" required aria-describedby="admin-note-hint" />
+					<p id="admin-note-hint" class="audiobook__hint">{copy.noteHint}</p>
+				</div>
+				<button type="submit" class="submit-button">{copy.create}</button>
+			</form>
+
+			<div class="admin__result" data-result hidden>
+				<label for="admin-message">{copy.resultLabel}</label>
+				<textarea id="admin-message" rows="4" readonly data-message></textarea>
+				<button type="button" class="submit-button" data-copy>{copy.copy}</button>
+			</div>
+
+			<h2>{copy.listHeading}</h2>
+			<div class="admin__table-wrap">
+				<table class="admin__table">
+					<thead>
+						<tr>
+							<th scope="col">{copy.columns.id}</th>
+							<th scope="col">{copy.columns.note}</th>
+							<th scope="col">{copy.columns.date}</th>
+							<th scope="col">{copy.columns.status}</th>
+							<th scope="col"><span class="admin__sr">{copy.columns.actions}</span></th>
+						</tr>
+					</thead>
+					<tbody data-grants></tbody>
+				</table>
+			</div>
+		</section>
+
+		<dialog class="admin__dialog" aria-labelledby="admin-confirm-text" data-confirm>
+			<p id="admin-confirm-text" data-confirm-text></p>
+			<div class="admin__dialog-actions">
+				<button type="button" class="admin__sign-out" data-answer="cancel">{copy.cancel}</button>
+				<button type="button" class="submit-button" data-answer="confirm">{copy.panel.revoke}</button>
+			</div>
+		</dialog>
+	</main>
+
+	<Footer lang={lang} {translations} />
+</Layout>
+
+<script>
+	import { createAdminApi } from '../scripts/admin/api.js';
+	import { createGoogleAuth, readFirebaseConfig } from '../scripts/admin/firebase.js';
+	import { startPanel } from '../scripts/admin/panel.js';
+
+	const root = document.querySelector('#admin');
+	let config;
+	try {
+		config = readFirebaseConfig(import.meta.env);
+	} catch (error) {
+		root.querySelector('[data-status]').textContent = root.dataset.configMissing;
+		root.querySelector('[data-sign-in]').disabled = true;
+		throw error;
+	}
+	const auth = createGoogleAuth(config);
+	startPanel({ root, auth, api: createAdminApi({ getToken: auth.getToken }), copy: root.dataset, clipboard: navigator.clipboard });
+</script>

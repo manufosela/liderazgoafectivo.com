@@ -116,5 +116,51 @@
       "unavailable": "No se ha podido cargar el audiolibro. Inténtalo de nuevo en unos minutos.",
       "resume": "Continuar «{title}» en {time}"
     }
+  },
+  "admin": {
+    "meta": {
+      "title": "Admin del audiolibro - Liderazgo Afectivo",
+      "description": "Gestión privada de los códigos del audiolibro.",
+      "canonical": "https://liderazgoafectivo.com/admin"
+    },
+    "eyebrow": "Admin",
+    "heading": "Códigos del audiolibro",
+    "intro": "Entra con tu cuenta de Google para crear, ver y revocar códigos.",
+    "signIn": "Entrar con Google",
+    "signOut": "Cerrar sesión",
+    "createHeading": "Nuevo código",
+    "fields": {
+      "email": "Correo de la persona",
+      "note": "Nota"
+    },
+    "noteHint": "Solo para ti: para quién es o por qué se lo regalas.",
+    "create": "Crear código",
+    "resultLabel": "Código creado. Solo se muestra ahora: copia el mensaje y envíaselo.",
+    "copy": "Copiar mensaje",
+    "listHeading": "Códigos",
+    "columns": {
+      "id": "Id",
+      "note": "Nota",
+      "date": "Fecha",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "cancel": "Cancelar",
+    "panel": {
+      "active": "Activo",
+      "revoked": "Revocado",
+      "revoke": "Revocar",
+      "notAdmin": "Esa cuenta no tiene permiso para gestionar el audiolibro.",
+      "invalidInput": "Revisa el correo y la nota (hasta 80 caracteres).",
+      "notFound": "Ese código ya no existe. Recarga la lista.",
+      "unavailable": "El servicio no responde. Inténtalo en unos minutos.",
+      "network": "No hay conexión. Comprueba tu red y vuelve a probar.",
+      "signInFailed": "No se ha podido entrar con Google. Vuelve a probar.",
+      "copied": "Mensaje copiado.",
+      "copyFailed": "No se ha podido copiar. Selecciona el texto y cópialo a mano.",
+      "share": "Te regalo el audiolibro de Liderazgo Afectivo. Entra en {url} con tu correo y este código: {code}",
+      "confirmRevoke": "¿Revocar el código {id}? La persona dejará de poder escucharlo.",
+      "configMissing": "Falta la configuración de Firebase en esta compilación de la web."
+    }
   }
 }
