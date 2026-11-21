@@ -31,7 +31,9 @@ const copy = { expired: 'caducada', unavailable: 'no disponible', network: 'sin 
 const statusOf = (root) => root.querySelector('[data-status]').textContent;
 
 const buildRoot = ({ native = false } = {}) => {
-  document.body.innerHTML = `<section><p data-now-playing></p><audio controls></audio><button data-resume hidden></button><p data-status></p><ol data-chapters></ol></section>`;
+  document.body.innerHTML = `<section><p data-now-playing></p><audio controls></audio>
+    <select data-rate><option value="0.8">0,8x</option><option value="0.9">0,9x</option><option value="1">1x</option><option value="1.25">1,25x</option></select>
+    <button data-resume hidden></button><p data-status></p><ol data-chapters></ol></section>`;
   const root = document.querySelector('section');
   const audio = root.querySelector('audio');
   audio.canPlayType = () => (native ? 'maybe' : '');
@@ -134,6 +136,24 @@ describe('startPlayer', () => {
     second.audio.dispatchEvent(new Event('loadedmetadata'));
 
     expect([second.audio.currentTime, resume.hidden]).toEqual([93, true]);
+  });
+
+  it('plays at the chosen speed across chapters and starts there on the next visit', async () => {
+    const first = buildRoot();
+    await startPlayer({ root: first.root, session, copy });
+    expect([first.root.querySelector('[data-rate]').value, first.audio.playbackRate]).toEqual(['1', 1]);
+
+    const select = first.root.querySelector('[data-rate]');
+    select.value = '0.9';
+    select.dispatchEvent(new Event('change'));
+    clickChapter(first.root, '001');
+    first.audio.playbackRate = 1;
+    first.audio.dispatchEvent(new Event('loadedmetadata'));
+    expect([first.audio.playbackRate, first.audio.defaultPlaybackRate]).toEqual([0.9, 0.9]);
+
+    const second = buildRoot();
+    await startPlayer({ root: second.root, session, copy });
+    expect([second.root.querySelector('[data-rate]').value, second.audio.playbackRate]).toEqual(['0.9', 0.9]);
   });
 
   it('offers nothing to resume on a first visit', async () => {
