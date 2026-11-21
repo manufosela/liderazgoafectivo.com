@@ -69,6 +69,8 @@ npm run grants --workspace functions -- revoke <id-corto>
 
 El código solo se muestra al crearlo. La lista enseña el id corto, el estado, la fecha y la nota, nunca el código.
 
+También se gestionan desde `/admin`, entrando con una cuenta de Google de la lista `AUDIOBOOK_ADMIN_EMAILS` (secreto de Firebase). La página necesita la configuración web de Firebase (consola de Firebase, Configuración del proyecto, Tus apps) en un `.env` que no se versiona, antes de `npm run build`: `PUBLIC_FIREBASE_API_KEY`, `PUBLIC_FIREBASE_AUTH_DOMAIN`, `PUBLIC_FIREBASE_PROJECT_ID` y `PUBLIC_FIREBASE_APP_ID`. Sin ella, la página avisa de que falta.
+
 ## 📝 Licencia
 
 © 2024 Liderazgo Afectivo® - Todos los derechos reservados
