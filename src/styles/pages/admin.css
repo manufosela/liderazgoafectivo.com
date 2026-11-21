@@ -116,6 +116,36 @@
   font-size: 1.4rem;
 }
 
+.admin__tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+.admin__tabs [role='tab'] {
+  padding: 0.6rem 1rem;
+  background: transparent;
+  color: var(--admin-muted);
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin__tabs [role='tab'][aria-selected='true'] {
+  color: var(--admin-text);
+  border-bottom-color: var(--admin-accent);
+}
+
+.admin__tab-panel:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
 .admin__form:not([hidden]),
 .admin__result:not([hidden]) {
   display: flex;
