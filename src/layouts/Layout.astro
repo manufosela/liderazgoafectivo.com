@@ -12,6 +12,8 @@ interface Props {
 	noindex?: boolean;
 	/** Private pages load no third-party script. */
 	analytics?: boolean;
+	/** Content-Security-Policy of the page; first in the head so it governs everything the page loads. */
+	csp?: string;
 }
 
 const {
@@ -23,6 +25,7 @@ const {
 	alternateUrls = {},
 	noindex = false,
 	analytics = true,
+	csp,
 } = Astro.props;
 
 const siteName = translations.common.siteName;
@@ -78,6 +81,7 @@ const websiteSchema = {
 <html lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
+		{csp && <meta http-equiv="Content-Security-Policy" content={csp} />}
 		<meta name="viewport" content="width=device-width" />
 		{lang === 'es' && alternateUrls.en && (
 			<script is:inline define:vars={{ enUrl: alternateUrls.en }}>
