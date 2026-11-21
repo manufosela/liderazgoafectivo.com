@@ -13,6 +13,9 @@ const copy = {
   unavailable: 'No disponible',
   network: 'Sin conexión',
   signInFailed: 'No se pudo entrar',
+  copied: 'Copiado',
+  copyFailed: 'No se pudo copiar',
+  share: 'Entra en {url} con el código {code}',
 };
 
 const markup = `
@@ -20,22 +23,43 @@ const markup = `
   <section data-login><button type="button" data-sign-in>Entrar</button></section>
   <section data-panel hidden>
     <button type="button" data-sign-out>Salir</button>
+    <form data-create><input name="email" type="email" required><input name="note" required><button type="submit">Crear</button></form>
+    <div data-result hidden><textarea data-message readonly></textarea><button type="button" data-copy>Copiar</button></div>
     <table><tbody data-grants></tbody></table>
   </section>`;
 
 const createApi = () => {
   const grants = [];
-  return { grants, listGrants: async () => grants.map((grant) => ({ ...grant })) };
+  return {
+    grants,
+    listGrants: async () => grants.map((grant) => ({ ...grant })),
+    createGrant: async ({ note }) => {
+      if (note === 'rechazada') throw new AdminRequestError('invalidInput');
+      if (note === 'fallo') throw new Error('bug');
+      grants.push({ shortId: `abcd000${grants.length}`, note, createdAt: new Date('2026-11-21T10:00:00Z'), status: 'active' });
+      return { code: 'AAAA-BBBB-CCCC', shortId: grants.at(-1).shortId };
+    },
+  };
 };
 
-const setUp = ({ api = createApi(), signIn = async () => {} } = {}) => {
+const setUp = ({ api = createApi(), signIn = async () => {}, writeText = async () => {} } = {}) => {
   const root = document.createElement('main');
   root.innerHTML = markup;
   const auth = { listener: null, signedOut: 0, signIn, onUser: (listener) => Object.assign(auth, { listener }), signOut: async () => { auth.signedOut += 1; await auth.listener(null); } };
-  startPanel({ root, auth, api, copy });
+  const clipboard = { written: [], writeText: async (text) => { clipboard.written.push(text); await writeText(text); } };
+  const { submitGrant } = startPanel({ root, auth, api, copy, clipboard });
   const $ = (selector) => root.querySelector(selector);
   const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
-  return { root, auth, api, $, settle };
+  const fill = (email, note) => {
+    Object.assign($('[name="email"]'), { value: email });
+    Object.assign($('[name="note"]'), { value: note });
+  };
+  const submit = async (email, note) => {
+    fill(email, note);
+    $('[data-create]').requestSubmit();
+    await settle();
+  };
+  return { root, auth, api, clipboard, $, settle, fill, submit, submitGrant };
 };
 
 const rows = (body) => [...body.querySelectorAll('tr')].map((row) => [...row.querySelectorAll('td')].slice(0, 4).map((cell) => cell.textContent));
@@ -81,6 +105,43 @@ describe('admin panel', () => {
     expect(auth.signedOut).toBe(1);
     expect($('[data-panel]').hidden).toBe(true);
     expect($('[data-status]').textContent).toBe('Sin permiso');
+  });
+
+  it('creates a code, shows it once in a message ready to copy, and lists it', async () => {
+    const { $, auth, clipboard, submit, settle } = setUp();
+    await auth.listener({ email: 'autor@example.com' });
+
+    await submit(' lectora@example.com ', 'Regalo');
+
+    expect($('[data-result]').hidden).toBe(false);
+    expect($('[data-message]').value).toBe('Entra en https://liderazgoafectivo.com/audiolibro con el código AAAA-BBBB-CCCC');
+    expect($('[name="email"]').value).toBe('');
+    expect(rows($('[data-grants]'))).toHaveLength(1);
+    $('[data-copy]').click();
+    await settle();
+    expect(clipboard.written).toEqual([$('[data-message]').value]);
+    expect($('[data-status]').textContent).toBe('Copiado');
+  });
+
+  it('explains a refused code and a failed copy', async () => {
+    const { $, auth, submit, settle } = setUp({ writeText: async () => Promise.reject(new Error('denied')) });
+    await auth.listener({ email: 'autor@example.com' });
+
+    await submit('lectora@example.com', 'rechazada');
+    expect([$('[data-status]').textContent, $('[data-result]').hidden]).toEqual(['Revisa los datos', true]);
+
+    $('[data-copy]').click();
+    await settle();
+    expect($('[data-status]').textContent).toBe('No se pudo copiar');
+  });
+
+  it('enables the button again even when creating fails unexpectedly', async () => {
+    const { $, auth, fill, submitGrant } = setUp();
+    await auth.listener({ email: 'autor@example.com' });
+    fill('lectora@example.com', 'fallo');
+
+    await expect(submitGrant()).rejects.toThrow('bug');
+    expect($('[data-create] button').disabled).toBe(false);
   });
 
   it('lets unexpected failures surface', async () => {
