@@ -4,13 +4,20 @@ import { renderGrants, shareMessage } from './view.js';
 /** Page the person opens with the code they get. */
 export const AUDIOBOOK_URL = 'https://liderazgoafectivo.com/audiolibro';
 
+const askConfirmation = (dialog) =>
+  new Promise((resolve) => {
+    dialog.returnValue = '';
+    dialog.addEventListener('close', () => resolve(dialog.returnValue === 'confirm'), { once: true });
+    dialog.showModal();
+  });
+
 /**
- * Wires the admin page: sign in with Google, list the codes and create new ones.
+ * Wires the admin page: sign in with Google, list the codes, create new ones and revoke them.
  * Only an AdminRequestError is turned into a message; anything else is a bug and surfaces.
  * @param {{
  *   root: HTMLElement,
  *   auth: {onUser: (listener: (user: object | null) => Promise<void>) => void, signIn: () => Promise<void>, signOut: () => Promise<void>},
- *   api: {listGrants: () => Promise<object[]>, createGrant: (grant: {email: string, note: string}) => Promise<{code: string}>},
+ *   api: {listGrants: () => Promise<object[]>, createGrant: (grant: {email: string, note: string}) => Promise<{code: string}>, revokeGrant: (shortId: string) => Promise<null>},
  *   copy: Record<string, string>,
  *   clipboard: {writeText: (text: string) => Promise<void>},
  * }} deps
@@ -18,8 +25,8 @@ export const AUDIOBOOK_URL = 'https://liderazgoafectivo.com/audiolibro';
  */
 export const startPanel = ({ root, auth, api, copy, clipboard }) => {
   const $ = (selector) => root.querySelector(selector);
-  const [status, login, panel, grants, form, result, message] = [
-    '[data-status]', '[data-login]', '[data-panel]', '[data-grants]', '[data-create]', '[data-result]', '[data-message]',
+  const [status, login, panel, grants, form, result, message, dialog] = [
+    '[data-status]', '[data-login]', '[data-panel]', '[data-grants]', '[data-create]', '[data-result]', '[data-message]', '[data-confirm]',
   ].map($);
   const labels = { statusLabels: { active: copy.active, revoked: copy.revoked }, revokeLabel: copy.revoke };
   const submit = form.querySelector('button[type="submit"]');
@@ -74,6 +81,22 @@ export const startPanel = ({ root, auth, api, copy, clipboard }) => {
       () => show(copy.copyFailed),
     ),
   );
+
+  // Its buttons close the dialog with their answer; Escape closes it with none, which is a "no".
+  dialog.addEventListener('click', ({ target }) => {
+    const answer = target.closest('[data-answer]')?.dataset.answer;
+    if (answer) dialog.close(answer);
+  });
+  grants.addEventListener('click', async ({ target }) => {
+    const shortId = target.closest('button[data-revoke]')?.dataset.revoke;
+    if (!shortId) return;
+    dialog.querySelector('[data-confirm-text]').textContent = copy.confirmRevoke.replace('{id}', shortId);
+    if (!(await askConfirmation(dialog))) return;
+    await attempt(async () => {
+      await api.revokeGrant(shortId);
+      await refresh();
+    });
+  });
 
   return { submitGrant };
 };

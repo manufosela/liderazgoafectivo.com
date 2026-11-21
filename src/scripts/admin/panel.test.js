@@ -16,6 +16,7 @@ const copy = {
   copied: 'Copiado',
   copyFailed: 'No se pudo copiar',
   share: 'Entra en {url} con el código {code}',
+  confirmRevoke: '¿Revocar {id}?',
 };
 
 const markup = `
@@ -26,7 +27,11 @@ const markup = `
     <form data-create><input name="email" type="email" required><input name="note" required><button type="submit">Crear</button></form>
     <div data-result hidden><textarea data-message readonly></textarea><button type="button" data-copy>Copiar</button></div>
     <table><tbody data-grants></tbody></table>
-  </section>`;
+  </section>
+  <dialog data-confirm>
+    <p data-confirm-text></p>
+    <button type="button" data-answer="cancel">Cancelar</button><button type="button" data-answer="confirm">Revocar</button>
+  </dialog>`;
 
 const createApi = () => {
   const grants = [];
@@ -38,6 +43,10 @@ const createApi = () => {
       if (note === 'fallo') throw new Error('bug');
       grants.push({ shortId: `abcd000${grants.length}`, note, createdAt: new Date('2026-11-21T10:00:00Z'), status: 'active' });
       return { code: 'AAAA-BBBB-CCCC', shortId: grants.at(-1).shortId };
+    },
+    revokeGrant: async (shortId) => {
+      grants.find((grant) => grant.shortId === shortId).status = 'revoked';
+      return null;
     },
   };
 };
@@ -142,6 +151,27 @@ describe('admin panel', () => {
 
     await expect(submitGrant()).rejects.toThrow('bug');
     expect($('[data-create] button').disabled).toBe(false);
+  });
+
+  it.each([
+    ['confirm', 'Revocado'],
+    ['cancel', 'Activo'],
+  ])('revokes a code only after confirming in the dialog (%s)', async (answer, status) => {
+    const { $, auth, submit, settle } = setUp();
+    await auth.listener({ email: 'autor@example.com' });
+    await submit('lectora@example.com', 'Regalo');
+
+    $('[data-grants] td').click();
+    expect($('[data-confirm]').open).toBe(false);
+    $('button[data-revoke]').click();
+    expect($('[data-confirm]').open).toBe(true);
+    expect($('[data-confirm-text]').textContent).toBe('¿Revocar abcd0000?');
+    $(`[data-answer="${answer}"]`).click();
+    await settle();
+
+    expect($('[data-confirm]').open).toBe(false);
+
+    expect(rows($('[data-grants]'))[0][3]).toBe(status);
   });
 
   it('lets unexpected failures surface', async () => {
