@@ -35,7 +35,8 @@ const csp = [
 	<Header lang={lang} {translations} {navigationPaths} {languageLinks} />
 
 	<main class="audiobook">
-		<section id="audiobook-access" class="audiobook__access" aria-labelledby="audiobook-heading">
+		<!-- Hidden until the script knows this browser has no pass: who already has one goes straight to the player. -->
+		<section id="audiobook-access" class="audiobook__access" aria-labelledby="audiobook-heading" hidden>
 			<span class="audiobook__eyebrow">{copy.eyebrow}</span>
 			<h1 id="audiobook-heading">{copy.heading}</h1>
 			<p class="audiobook__intro">{copy.intro}</p>
@@ -94,42 +95,33 @@ const csp = [
 </Layout>
 
 <script>
-	import { requestSession } from '../scripts/audiobook/access.js';
+	import { createDeviceStore } from '../scripts/audiobook/access.js';
+	import { startEntry } from '../scripts/audiobook/entry.js';
 
-	// The player (and hls.js) is only downloaded once the listener has signed in.
-	document.querySelector('#audiobook-player').addEventListener('audiobook:session', async ({ currentTarget: root, detail: session }) => {
+	const player = document.querySelector('#audiobook-player');
+	// The player (and hls.js) is only downloaded once the listener is in.
+	player.addEventListener('audiobook:session', async ({ currentTarget: root, detail: session }) => {
 		const { startPlayer } = await import('../scripts/audiobook/player.js');
 		await startPlayer({ root, session, copy: root.dataset });
 	});
 
-	const form = document.querySelector('#audiobook-form');
-	const message = document.querySelector('#audiobook-message');
-	const button = form.querySelector('button[type="submit"]');
-	const copy = form.dataset;
-
-	const setBusy = (busy) => {
-		button.disabled = busy;
-		button.textContent = busy ? copy.submitting : copy.submit;
-		form.toggleAttribute('aria-busy', busy);
+	// Some browsers throw on the localStorage getter itself: then nothing is remembered.
+	const openDeviceStore = () => {
+		try {
+			return createDeviceStore(globalThis.localStorage);
+		} catch {
+			return { save: () => false, load: () => null, forget: () => false };
+		}
 	};
 
-	form.addEventListener('submit', async (event) => {
-		event.preventDefault();
-		if (!form.reportValidity()) return;
-		const data = new FormData(form);
-		message.textContent = '';
-		setBusy(true);
-		const result = await requestSession({ code: String(data.get('code')), email: String(data.get('email')) });
-		setBusy(false);
-		if (!result.ok) {
-			message.textContent = copy[result.reason];
-			return;
-		}
-		document.querySelector('#audiobook-access').hidden = true;
-		const player = document.querySelector('#audiobook-player');
-		player.hidden = false;
-		document.querySelector('#audiobook-welcome').focus();
-		// The player listens for this event; the session never leaves memory.
-		player.dispatchEvent(new CustomEvent('audiobook:session', { detail: result.session }));
+	const form = document.querySelector('#audiobook-form');
+	startEntry({
+		access: document.querySelector('#audiobook-access'),
+		form,
+		message: document.querySelector('#audiobook-message'),
+		player,
+		welcome: document.querySelector('#audiobook-welcome'),
+		devices: openDeviceStore(),
+		copy: form.dataset,
 	});
 </script>
