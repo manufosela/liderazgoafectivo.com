@@ -1,8 +1,11 @@
+import { getAuth } from 'firebase-admin/auth';
 import { defineSecret } from 'firebase-functions/params';
 import { onRequest } from 'firebase-functions/v2/https';
+import { createAdminVerifier } from './admin-auth.js';
+import { createAdminHandler } from './admin-handler.js';
 import { createFirestoreAttemptStore } from './attempt-store.js';
 import { createAttemptLimiter } from './attempts.js';
-import { getAudiobookDatabase } from './database.js';
+import { getAudiobookApp, getAudiobookDatabase } from './database.js';
 import { createFirestoreGrantStore } from './grant-store.js';
 import { createBucketMediaStore, getAudiobookBucket } from './media-store.js';
 import { createPlaybackHandler } from './playback-handler.js';
@@ -11,10 +14,13 @@ import { createStartSessionHandler } from './start-session.js';
 const fingerprintKey = defineSecret('AUDIOBOOK_FINGERPRINT_KEY');
 const sessionKey = defineSecret('AUDIOBOOK_SESSION_KEY');
 const mediaKey = defineSecret('AUDIOBOOK_MEDIA_KEY');
+// Comma separated emails allowed in the audiobook admin, apart from the community admins.
+const adminEmails = defineSecret('AUDIOBOOK_ADMIN_EMAILS');
 
 // Handlers are built on the first request, so loading this module during deploy never opens the database.
 let startSessionHandler;
 let playbackHandler;
+let adminHandler;
 
 export const startSession = onRequest(
   { region: 'europe-west1', invoker: 'public', maxInstances: 3, secrets: [fingerprintKey, sessionKey] },
@@ -44,5 +50,21 @@ export const audio = onRequest(
       now: () => new Date(),
     });
     return playbackHandler(request, response);
+  },
+);
+
+export const admin = onRequest(
+  { region: 'europe-west1', invoker: 'public', maxInstances: 2, secrets: [fingerprintKey, adminEmails] },
+  (request, response) => {
+    adminHandler ??= createAdminHandler({
+      verifyAdmin: createAdminVerifier({
+        verifyIdToken: (token, checkRevoked) => getAuth(getAudiobookApp()).verifyIdToken(token, checkRevoked),
+        adminEmails: () => adminEmails.value(),
+      }),
+      grants: createFirestoreGrantStore(getAudiobookDatabase()),
+      fingerprintKey: () => fingerprintKey.value(),
+      now: () => new Date(),
+    });
+    return adminHandler(request, response);
   },
 );

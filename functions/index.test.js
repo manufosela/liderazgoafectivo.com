@@ -6,7 +6,16 @@ vi.mock('firebase-functions/v2/https', () => ({ onRequest: (options, handler) =>
 vi.mock('firebase-functions/params', () => ({
   defineSecret: (name) => ({ name, value: () => `${name}-value-with-at-least-32-characters` }),
 }));
+vi.mock('firebase-admin/auth', () => ({
+  getAuth: (app) => ({
+    verifyIdToken: async (...args) => {
+      database.verified = { app, args };
+      throw Object.assign(new Error('revoked'), { code: 'auth/id-token-revoked' });
+    },
+  }),
+}));
 vi.mock('./database.js', () => ({
+  getAudiobookApp: () => 'audiobook-app',
   getAudiobookDatabase: () => {
     database.opened += 1;
     return { collection: () => ({ doc: () => ({}) }) };
@@ -20,7 +29,7 @@ vi.mock('./media-store.js', () => ({
   createBucketMediaStore: () => ({ read: async () => null }),
 }));
 
-const { audio, startSession } = await import('./index.js');
+const { admin, audio, startSession } = await import('./index.js');
 
 const respond = () => {
   const response = { headers: {} };
@@ -62,5 +71,25 @@ describe('audio function', () => {
     expect(first.statusCode).toBe(401);
     expect(first.headers['Cache-Control']).toBe('private, no-store');
     expect(database.buckets).toBe(1);
+  });
+});
+
+describe('admin function', () => {
+  it('runs in Europe with the fingerprint key and the admin list', () => {
+    expect(admin.options).toMatchObject({ region: 'europe-west1', invoker: 'public' });
+    expect(admin.options.secrets.map(({ name }) => name)).toEqual(['AUDIOBOOK_FINGERPRINT_KEY', 'AUDIOBOOK_ADMIN_EMAILS']);
+  });
+
+  it('builds the handler once and checks the token with Firebase Auth, revocation included', async () => {
+    const headers = { origin: 'https://liderazgoafectivo.com', authorization: 'Bearer id-token' };
+    const request = { method: 'GET', path: '/grants', get: (name) => headers[name] };
+    const opened = database.opened;
+
+    const first = await admin(request, respond());
+    await admin(request, respond());
+
+    expect(first.statusCode).toBe(401);
+    expect(database.verified).toEqual({ app: 'audiobook-app', args: ['id-token', true] });
+    expect(database.opened - opened).toBe(1);
   });
 });
