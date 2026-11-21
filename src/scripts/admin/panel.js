@@ -28,7 +28,7 @@ export const startPanel = ({ root, auth, api, copy, clipboard }) => {
   const [status, login, panel, grants, form, result, message, dialog] = [
     '[data-status]', '[data-login]', '[data-panel]', '[data-grants]', '[data-create]', '[data-result]', '[data-message]', '[data-confirm]',
   ].map($);
-  const labels = { statusLabels: { active: copy.active, revoked: copy.revoked }, revokeLabel: copy.revoke };
+  const labels = { statusLabels: { active: copy.active, revoked: copy.revoked }, revokeLabel: copy.revoke, unknownEmail: copy.unknownEmail };
   const submit = form.querySelector('button[type="submit"]');
   const field = (name) => form.elements.namedItem(name).value.trim();
 

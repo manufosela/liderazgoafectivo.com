@@ -47,16 +47,18 @@ const sameFingerprint = (stored, candidate) =>
   typeof stored === 'string' && stored.length === candidate.length && timingSafeEqual(Buffer.from(stored), Buffer.from(candidate));
 
 /**
- * Builds the Firestore document for a new grant: only keyed fingerprints, never the code or the email.
+ * Builds the Firestore document for a new grant. The code is never kept, only its keyed fingerprint as the id.
+ * The email is kept so the admin knows who has each code; access is still checked against its fingerprint.
  * @param {{code: string, email: string}} access
  * @param {{secret: string, now: Date}} options
- * @returns {{id: string, record: {emailFingerprint: string, revoked: boolean, createdAt: Date}}}
+ * @returns {{id: string, record: {email: string, emailFingerprint: string, revoked: boolean, createdAt: Date}}}
  */
 export const createGrantRecord = ({ code, email }, { secret, now }) => {
   assertSecret(secret);
+  const normalisedEmail = normaliseEmail(email);
   return {
     id: fingerprint(secret, normaliseCode(code)),
-    record: { emailFingerprint: fingerprint(secret, normaliseEmail(email)), revoked: false, createdAt: now },
+    record: { email: normalisedEmail, emailFingerprint: fingerprint(secret, normalisedEmail), revoked: false, createdAt: now },
   };
 };
 

@@ -71,14 +71,22 @@ describe('validateAccess', () => {
 });
 
 describe('createGrantRecord', () => {
-  it('keeps neither the code nor the email in clear', () => {
+  it('never keeps the code in clear', () => {
     const { id, record } = createGrantRecord({ code, email }, { secret, now: new Date('2026-11-19T00:00:00Z') });
     const stored = JSON.stringify({ id, record }).toLowerCase();
 
     expect(stored).not.toContain('k7qm');
     expect(stored).not.toContain('2xpa');
-    expect(stored).not.toContain('lectora');
-    expect(stored).not.toContain('example');
-    expect(record).toEqual({ emailFingerprint: expect.stringMatching(/^[0-9a-f]{64}$/), revoked: false, createdAt: new Date('2026-11-19T00:00:00Z') });
+  });
+
+  it('keeps the email the code was given to, as it is checked on entry, so the admin knows who has it', () => {
+    const { record } = createGrantRecord({ code, email: '  Lectora@Example.com ' }, { secret, now: new Date('2026-11-19T00:00:00Z') });
+
+    expect(record).toEqual({
+      email: 'lectora@example.com',
+      emailFingerprint: expect.stringMatching(/^[0-9a-f]{64}$/),
+      revoked: false,
+      createdAt: new Date('2026-11-19T00:00:00Z'),
+    });
   });
 });

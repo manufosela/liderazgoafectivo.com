@@ -7,6 +7,7 @@ const copy = {
   active: 'Activo',
   revoked: 'Revocado',
   revoke: 'Revocar',
+  unknownEmail: 'Sin correo',
   notAdmin: 'Sin permiso',
   invalidInput: 'Revisa los datos',
   notFound: 'No existe',
@@ -38,10 +39,10 @@ const createApi = () => {
   return {
     grants,
     listGrants: async () => grants.map((grant) => ({ ...grant })),
-    createGrant: async ({ note }) => {
+    createGrant: async ({ email, note }) => {
       if (note === 'rechazada') throw new AdminRequestError('invalidInput');
       if (note === 'fallo') throw new Error('bug');
-      grants.push({ shortId: `abcd000${grants.length}`, note, createdAt: new Date('2026-11-21T10:00:00Z'), status: 'active' });
+      grants.push({ shortId: `abcd000${grants.length}`, email, note, createdAt: new Date('2026-11-21T10:00:00Z'), status: 'active' });
       return { code: 'AAAA-BBBB-CCCC', shortId: grants.at(-1).shortId };
     },
     revokeGrant: async (shortId) => {
@@ -71,7 +72,7 @@ const setUp = ({ api = createApi(), signIn = async () => {}, writeText = async (
   return { root, auth, api, clipboard, $, settle, fill, submit, submitGrant };
 };
 
-const rows = (body) => [...body.querySelectorAll('tr')].map((row) => [...row.querySelectorAll('td')].slice(0, 4).map((cell) => cell.textContent));
+const rows = (body) => [...body.querySelectorAll('tr')].map((row) => [...row.querySelectorAll('td')].slice(0, 5).map((cell) => cell.textContent));
 
 describe('admin panel', () => {
   it('asks to sign in while nobody is signed in, and says when signing in fails', async () => {
@@ -87,13 +88,19 @@ describe('admin panel', () => {
 
   it('shows the codes to a signed-in admin', async () => {
     const api = createApi();
-    api.grants.push({ shortId: 'abcd1234', note: 'Regalo', createdAt: new Date('2026-11-20T10:00:00Z'), status: 'active' });
+    api.grants.push(
+      { shortId: 'abcd1234', email: null, note: 'Antiguo', createdAt: new Date('2026-11-19T10:00:00Z'), status: 'active' },
+      { shortId: 'abcd5678', email: 'lectora@example.com', note: 'Regalo', createdAt: new Date('2026-11-20T10:00:00Z'), status: 'active' },
+    );
     const { $, auth } = setUp({ api });
 
     await auth.listener({ email: 'autor@example.com' });
 
     expect([$('[data-login]').hidden, $('[data-panel]').hidden]).toEqual([true, false]);
-    expect(rows($('[data-grants]'))).toEqual([['abcd1234', 'Regalo', '20 nov 2026', 'Activo']]);
+    expect(rows($('[data-grants]'))).toEqual([
+      ['abcd5678', 'lectora@example.com', 'Regalo', '20 nov 2026', 'Activo'],
+      ['abcd1234', 'Sin correo', 'Antiguo', '19 nov 2026', 'Activo'],
+    ]);
   });
 
   it('signs out from the panel', async () => {
@@ -171,7 +178,7 @@ describe('admin panel', () => {
 
     expect($('[data-confirm]').open).toBe(false);
 
-    expect(rows($('[data-grants]'))[0][3]).toBe(status);
+    expect(rows($('[data-grants]'))[0][4]).toBe(status);
   });
 
   it('lets unexpected failures surface', async () => {

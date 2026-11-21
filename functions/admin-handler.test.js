@@ -58,7 +58,7 @@ const setUp = ({ grants = createGrantStore() } = {}) => {
 };
 
 describe('admin handler', () => {
-  it('creates a code that works once, then lists it without code nor email', async () => {
+  it('creates a code that works once, then lists it with its email but never the code', async () => {
     const { grants, send } = setUp();
 
     const created = await send({ method: 'POST', body: { email, note: 'Regalo' } });
@@ -68,7 +68,7 @@ describe('admin handler', () => {
     expect(created.headers['Cache-Control']).toBe('no-store');
     await expect(validateAccess({ code: created.body.code, email }, { grants, secret: fingerprintKey })).resolves.toBeDefined();
     const listed = await send();
-    expect(listed.body).toEqual({ grants: [{ shortId: created.body.shortId, note: 'Regalo', createdAt: now.toISOString(), status: 'active' }] });
+    expect(listed.body).toEqual({ grants: [{ shortId: created.body.shortId, email, note: 'Regalo', createdAt: now.toISOString(), status: 'active' }] });
   });
 
   it('revokes a code by its short id', async () => {

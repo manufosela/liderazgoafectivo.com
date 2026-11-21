@@ -31,7 +31,7 @@ describe('generateCode', () => {
 });
 
 describe('createGrant', () => {
-  it('returns the code once and stores only fingerprints with the note', async () => {
+  it('returns the code once and stores the email and note but never the code', async () => {
     const store = createMemoryStore();
 
     const { code, shortId } = await createGrant({ email, note: '  Regalo de Navidad ' }, { grants: store, secret, now });
@@ -39,8 +39,7 @@ describe('createGrant', () => {
     await expect(validateAccess({ code, email }, { grants: store, secret })).resolves.toBeDefined();
     const stored = JSON.stringify([...store.grants]);
     expect(stored).not.toContain(code.replaceAll('-', ''));
-    expect(stored).not.toContain('lectora');
-    expect([...store.grants.values()][0]).toMatchObject({ note: 'Regalo de Navidad', revoked: false, createdAt: now });
+    expect([...store.grants.values()][0]).toMatchObject({ email: email.toLowerCase(), note: 'Regalo de Navidad', revoked: false, createdAt: now });
     expect(shortId).toMatch(/^[0-9a-f]{8}$/);
   });
 
@@ -65,14 +64,14 @@ describe('createGrant', () => {
 });
 
 describe('listGrants and revokeGrant', () => {
-  it('lists note, date and state without the code, and a revoked code stops working', async () => {
+  it('lists email, note, date and state without the code, and a revoked code stops working', async () => {
     const store = createMemoryStore();
     const { code, shortId } = await createGrant({ email, note: 'Equipo' }, { grants: store, secret, now });
 
     await revokeGrant(shortId, { grants: store, now });
 
     const listed = await listGrants({ grants: store });
-    expect(listed).toEqual([{ shortId, note: 'Equipo', createdAt: now, status: 'revoked' }]);
+    expect(listed).toEqual([{ shortId, email: email.toLowerCase(), note: 'Equipo', createdAt: now, status: 'revoked' }]);
     expect(JSON.stringify(listed)).not.toContain(code.replaceAll('-', ''));
     await expect(validateAccess({ code, email }, { grants: store, secret })).rejects.toBeInstanceOf(AccessDeniedError);
   });
@@ -83,6 +82,14 @@ describe('listGrants and revokeGrant', () => {
     const store = createMemoryStore([['bbbbbbbb11', later], ['aaaaaaaa11', earlier]]);
 
     expect((await listGrants({ grants: store })).map(({ note, status }) => [note, status])).toEqual([['Primero', 'active'], ['Segundo', 'active']]);
+  });
+
+  it('lists a grant created before emails were kept with an unknown email', async () => {
+    const old = { emailFingerprint: 'a', note: 'Antiguo', revoked: false, createdAt: now };
+
+    const [listed] = await listGrants({ grants: createMemoryStore([['aaaaaaaa11', old]]) });
+
+    expect(listed.email).toBeNull();
   });
 
   it.each([
