@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { getPageSetup } from '../i18n/translations';
-import { PLAYBACK_RATES } from '../scripts/audiobook/player-model.js';
+import { AUDIO_BASE_URL, PLAYBACK_RATES } from '../scripts/audiobook/player-model.js';
 import '../styles/pages/contact.css';
 import '../styles/pages/audiobook.css';
 
@@ -12,9 +12,26 @@ const { lang, translations, navigationPaths, languageLinks } = getPageSetup('es'
 const copy = translations.audiobook;
 if (!copy) throw new Error('es.json has no audiobook section');
 const rateLabel = (rate) => `${new Intl.NumberFormat('es-ES').format(rate)}x`;
+
+// The browser keeps a device pass here (ADR 0001): only the site's own scripts run, and data only goes to the audiobook service.
+// hls.js plays through blob: media and a blob: worker. Not in dev, where Vite injects inline scripts.
+const audioApi = new URL(AUDIO_BASE_URL).origin;
+const csp = [
+	"default-src 'self'",
+	"script-src 'self'",
+	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+	"font-src 'self' https://fonts.gstatic.com",
+	"img-src 'self' data:",
+	`media-src 'self' blob: ${audioApi}`,
+	`connect-src 'self' ${audioApi}`,
+	"worker-src 'self' blob:",
+	"form-action 'self'",
+	"base-uri 'self'",
+	"object-src 'none'",
+].join('; ');
 ---
 
-<Layout title={copy.meta.title} description={copy.meta.description} canonicalUrl={copy.meta.canonical} lang={lang} {translations} noindex analytics={false}>
+<Layout title={copy.meta.title} description={copy.meta.description} canonicalUrl={copy.meta.canonical} lang={lang} {translations} noindex analytics={false} csp={import.meta.env.PROD ? csp : undefined}>
 	<Header lang={lang} {translations} {navigationPaths} {languageLinks} />
 
 	<main class="audiobook">
