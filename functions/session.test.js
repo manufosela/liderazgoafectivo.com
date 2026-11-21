@@ -1,5 +1,6 @@
+import { createHmac } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
-import { SESSION_TTL_MS, SessionError, issueSession, verifySession } from './session.js';
+import { DEVICE_TTL_MS, SESSION_TTL_MS, SessionError, issueDevicePass, issueSession, verifyDevicePass, verifySession } from './session.js';
 
 const key = 'session-key-with-at-least-32-characters';
 const now = new Date('2026-11-19T10:00:00Z');
@@ -47,5 +48,38 @@ describe('issueSession and verifySession', () => {
 
   it('fails loudly when the key is too short', () => {
     expect(() => issueSession(grantId, { key: 'short', now })).toThrow(/key/);
+  });
+});
+
+describe('issueDevicePass and verifyDevicePass', () => {
+  it('issues a pass for this browser that is valid for a year', async () => {
+    const { token, expiresAt } = issueDevicePass(grantId, { key, now });
+
+    expect(DEVICE_TTL_MS).toBe(365 * 24 * 60 * 60 * 1000);
+    expect(expiresAt).toEqual(at(DEVICE_TTL_MS));
+    await expect(verifyDevicePass(token, { key, now: at(DEVICE_TTL_MS - 1), grants: activeGrants })).resolves.toEqual({ grantId, expiresAt });
+    await rejects(verifyDevicePass(token, { key, now: at(DEVICE_TTL_MS), grants: activeGrants }));
+  });
+
+  it('stops working once the grant is revoked', async () => {
+    const { token } = issueDevicePass(grantId, { key, now });
+
+    await rejects(verifyDevicePass(token, { key, now, grants: { get: async () => ({ revoked: true }) } }));
+  });
+
+  it('still takes a session issued before tokens said their use, but never as a pass', async () => {
+    const payload = Buffer.from(JSON.stringify({ grantId, expiresAt: at(SESSION_TTL_MS).getTime() })).toString('base64url');
+    const legacy = `${payload}.${createHmac('sha256', key).update(payload).digest('base64url')}`;
+
+    await expect(verifySession(legacy, { key, now, grants: activeGrants })).resolves.toMatchObject({ grantId });
+    await rejects(verifyDevicePass(legacy, { key, now, grants: activeGrants }));
+  });
+
+  it('never stands in for a session, nor a session for a pass', async () => {
+    const pass = issueDevicePass(grantId, { key, now }).token;
+    const session = issueSession(grantId, { key, now }).token;
+
+    await rejects(verifySession(pass, { key, now, grants: activeGrants }));
+    await rejects(verifyDevicePass(session, { key, now, grants: activeGrants }));
   });
 });

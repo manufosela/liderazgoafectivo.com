@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createAttemptLimiter } from './attempts.js';
 import { createGrant } from './grants-admin.js';
-import { verifySession } from './session.js';
+import { verifyDevicePass, verifySession } from './session.js';
 import { createStartSessionHandler } from './start-session.js';
 
 const fingerprintKey = 'fingerprint-key-with-at-least-32-chars';
@@ -15,6 +15,7 @@ const createGrantStore = () => {
   return {
     get: async (id) => grants.get(id) ?? null,
     create: async (id, record) => grants.set(id, record),
+    revokeAll: () => grants.forEach((record, id) => grants.set(id, { ...record, revoked: true })),
   };
 };
 
@@ -79,6 +80,36 @@ describe('startSession handler', () => {
     expect(response.body.expiresAt).toBe('2026-11-19T12:00:00.000Z');
     await expect(verifySession(response.body.token, { key: sessionKey, now, grants })).resolves.toBeDefined();
     expect([...attempts.records.values()].map(({ count }) => count)).toEqual([0, 0]);
+  });
+
+  it('gives this browser a pass for a year along with the session', async () => {
+    const { grants, send } = await setUp();
+
+    const { body } = await send();
+
+    await expect(verifyDevicePass(body.device, { key: sessionKey, now, grants })).resolves.toMatchObject({ expiresAt: new Date('2027-11-19T10:00:00Z') });
+  });
+
+  it('starts a new session and renews the pass from the pass alone, without counting attempts', async () => {
+    const { grants, attempts, send } = await setUp();
+    const { device } = (await send()).body;
+    attempts.records.clear();
+
+    const response = await send({ body: { device } });
+
+    expect(response.statusCode).toBe(200);
+    await expect(verifySession(response.body.token, { key: sessionKey, now, grants })).resolves.toBeDefined();
+    await expect(verifyDevicePass(response.body.device, { key: sessionKey, now, grants })).resolves.toBeDefined();
+    expect(attempts.records.size).toBe(0);
+  });
+
+  it('refuses the pass once the code is revoked, and a session passed off as a pass', async () => {
+    const { grants, send } = await setUp();
+    const { device, token } = (await send()).body;
+
+    expect((await send({ body: { device: token } })).body).toEqual({ error: 'access_denied' });
+    grants.revokeAll();
+    expect((await send({ body: { device } })).statusCode).toBe(401);
   });
 
   it('answers a wrong email with the generic error and blocks after five failures', async () => {
